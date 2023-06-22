@@ -28,7 +28,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto getItemById(Long itemId) {
-     return mapper.map(itemStorage.getById(itemId),ItemDto.class);
+        return mapper.map(itemStorage.getById(itemId), ItemDto.class);
     }
 
     @Override
@@ -37,7 +37,8 @@ public class ItemServiceImpl implements ItemService {
                 .stream()
                 .filter(item -> item.getUser() == userStorage.getById(userId))
                 .map(item -> mapper.map(item, ItemDto.class))
-                .collect(Collectors.toList());;
+                .collect(Collectors.toList());
+
     }
 
     @Override
@@ -52,7 +53,8 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> search(String text) {
         return itemStorage.search(text)
                 .stream()
-                .map(item->mapper.map(item,ItemDto.class));
+                .map(item -> mapper.map(item, ItemDto.class))
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -36,9 +36,9 @@ public class InMemoryItemStorage extends Storage<Item> {
     public Item getById(Long id) {
         return items.values()
                 .stream()
-                .filter(x->x.getId() == id)
+                .filter(x -> x.getId() == id)
                 .findFirst()
-                .orElseThrow(() -> new ItemNotFoundException(String.format("Вещь с id = %d не найдена",id)));
+                .orElseThrow(() -> new ItemNotFoundException(String.format("Вещь с id = %d не найдена", id)));
     }
 
     @Override
@@ -61,4 +61,4 @@ public class InMemoryItemStorage extends Storage<Item> {
                 .collect(Collectors.toList());
     }
 }
->>>>>>> 2ee12ce350f088f712e5ee22ef9b28d0e6b19fc2
+

@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 package ru.practicum.shareit.user.service;
 
 import lombok.AllArgsConstructor;

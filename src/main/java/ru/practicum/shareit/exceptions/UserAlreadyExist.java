@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 package ru.practicum.shareit.exceptions;
 
 public class UserAlreadyExist extends RuntimeException {
@@ -6,12 +6,4 @@ public class UserAlreadyExist extends RuntimeException {
         super(message);
     }
 }
-=======
-package ru.practicum.shareit.exceptions;
 
-public class UserAlreadyExist extends RuntimeException {
-    public UserAlreadyExist(String message) {
-        super(message);
-    }
-}
->>>>>>> 2ee12ce350f088f712e5ee22ef9b28d0e6b19fc2
