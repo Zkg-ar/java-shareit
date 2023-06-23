@@ -11,9 +11,6 @@ import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
@@ -46,13 +43,14 @@ public class ItemController {
         if (text.isEmpty()) {
             return Collections.emptyList();
         }
+
         return itemService.search(text);
 
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long itemId, @RequestBody ItemDto itemDto) {
-        log.info("Получен запрос на обновление вещи по id = {}",itemId);
+        log.info("Получен запрос на обновление вещи по id = {}", itemId);
         return itemService.updateItem(itemDto, userId, itemId);
     }
 
