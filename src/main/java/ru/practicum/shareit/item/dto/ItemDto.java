@@ -15,4 +15,3 @@ public class ItemDto {
     @NotNull
     private Boolean available;
 }
-

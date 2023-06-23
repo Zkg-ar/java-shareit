@@ -1,18 +1,19 @@
+
 package ru.practicum.shareit.user.storage;
 
 import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.Storage;
 import ru.practicum.shareit.exceptions.UserAlreadyExist;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
 
-import javax.validation.ValidationException;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+
 import java.util.stream.Collectors;
 
 @Component
@@ -74,4 +75,3 @@ public class InMemoryUserStorage extends Storage<User> {
     }
 
 }
-

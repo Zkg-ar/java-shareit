@@ -6,4 +6,3 @@ public class UserAlreadyExist extends RuntimeException {
         super(message);
     }
 }
-

@@ -1,7 +1,6 @@
 
 package ru.practicum.shareit.item.storage;
 
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.Storage;
@@ -38,7 +37,7 @@ public class InMemoryItemStorage extends Storage<Item> {
 
     @Override
     public Item update(Item item) {
-        items.put(item.getId(),item);
+        items.put(item.getId(), item);
         return item;
     }
 
@@ -53,8 +52,9 @@ public class InMemoryItemStorage extends Storage<Item> {
         return items.values().stream()
                 .filter(Item::getAvailable)
                 .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase()) ||
-                 item.getDescription().toLowerCase().contains(text.toLowerCase()))
+                        item.getDescription().toLowerCase().contains(text.toLowerCase()))
                 .collect(Collectors.toList());
     }
 }
+
 

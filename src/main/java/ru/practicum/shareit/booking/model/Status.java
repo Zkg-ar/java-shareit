@@ -27,4 +27,3 @@ public enum Status {
         throw new IllegalArgumentException("Такой статус бронирования не существует");
     }
 }
-

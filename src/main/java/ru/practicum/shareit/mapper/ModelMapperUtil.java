@@ -12,4 +12,3 @@ public class ModelMapperUtil extends ModelMapper {
     }
 
 }
-
