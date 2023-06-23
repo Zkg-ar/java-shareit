@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -58,16 +59,16 @@ public class InMemoryUserStorage extends Storage<User> {
     public User update(User user) {
         User updateUser = getById(user.getId());
 
-        if (users.values().stream().anyMatch(u -> u.getEmail().equals(user.getEmail()))) {
-            throw new UserAlreadyExist(String.format("Пользователь с email = %s уже существует", user.getEmail()));
-        }
+        Set<String> emails = users.values().stream().map(User::getEmail).collect(Collectors.toSet());
 
-        if (user.getEmail() != null) {
-            updateUser.setEmail(user.getEmail());
+        if (emails.contains(user.getEmail()) && (!user.getEmail().equals(updateUser.getEmail()))) {
+            throw new UserAlreadyExist(String.format("Email %s уже существует.", user.getEmail()));
         }
-
-        if (user.getName() != null) {
+        if (user.getName() != null && !updateUser.getName().isBlank()) {
             updateUser.setName(user.getName());
+        }
+        if (user.getEmail() != null && !updateUser.getEmail().isBlank()) {
+            updateUser.setEmail(user.getEmail());
         }
 
         users.put(updateUser.getId(), updateUser);

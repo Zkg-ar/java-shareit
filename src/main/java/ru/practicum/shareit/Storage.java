@@ -1,8 +1,6 @@
 
 package ru.practicum.shareit;
 
-import ru.practicum.shareit.user.model.User;
-
 import java.util.List;
 
 public abstract class Storage<T> {

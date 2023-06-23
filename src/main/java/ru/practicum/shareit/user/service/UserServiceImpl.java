@@ -46,24 +46,6 @@ public class UserServiceImpl implements UserService {
         return mapper.map(userStorage.update(user), UserDto.class);
     }
 
-    //    @Override
-//    public UserDto updateUserById(Long id, UserDto userDto) {
-//
-//        if (getAllUsers().stream().anyMatch(u -> u.getEmail().equals(userDto.getEmail()))) {
-//            throw new UserAlreadyExist(String.format("Пользователь с email = %s уже существует", userDto.getEmail()));
-//        }
-//
-//        User user = mapper.map(getUserById(id), User.class);
-//        if (userDto.getName() != null) {
-//            user.setName(userDto.getName());
-//        }
-//
-//        if (userDto.getEmail() != null) {
-//            user.setEmail(userDto.getEmail());
-//        }
-//        return mapper.map(userStorage.update(user), UserDto.class);
-//    }
-
     @Override
     public void deleteUser(Long id) {
         if (getUserById(id) == null) {
