@@ -14,8 +14,6 @@ public abstract class Storage<T> {
 
     public abstract T add(T t);
 
-    public abstract void delete(Long id);
-
     public abstract T getById(Long id);
 
     public abstract T update(T t);

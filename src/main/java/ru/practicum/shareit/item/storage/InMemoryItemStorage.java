@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import ru.practicum.shareit.Storage;
 import ru.practicum.shareit.exceptions.ItemNotFoundException;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.storage.UserStorage;
+
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,11 +28,6 @@ public class InMemoryItemStorage extends Storage<Item> {
 
 
     @Override
-    public void delete(Long id) {
-
-    }
-
-    @Override
     public Item getById(Long id) {
         return items.values()
                 .stream()
@@ -43,7 +38,8 @@ public class InMemoryItemStorage extends Storage<Item> {
 
     @Override
     public Item update(Item item) {
-        return null;
+        items.put(item.getId(),item);
+        return item;
     }
 
     @Override
@@ -55,9 +51,9 @@ public class InMemoryItemStorage extends Storage<Item> {
 
     public List<Item> search(String text) {
         return items.values().stream()
-                .filter(item -> item.getName().contains(text.toLowerCase()))
-                .filter(item -> item.getDescription().contains(text.toLowerCase()))
-                .filter(item -> item.getAvailable() == true)
+                .filter(Item::getAvailable)
+                .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase()) ||
+                 item.getDescription().toLowerCase().contains(text.toLowerCase()))
                 .collect(Collectors.toList());
     }
 }

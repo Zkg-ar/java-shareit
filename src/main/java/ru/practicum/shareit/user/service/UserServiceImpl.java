@@ -11,7 +11,7 @@ import ru.practicum.shareit.mapper.ModelMapperUtil;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.InMemoryUserStorage;
-import ru.practicum.shareit.user.storage.UserStorage;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,21 +47,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUserById(Long id, UserDto userDto) {
-
-        if (getAllUsers().stream().anyMatch(u -> u.getEmail().equals(userDto.getEmail()))) {
-            throw new UserAlreadyExist(String.format("Пользователь с email = %s уже существует", userDto.getEmail()));
-        }
-
-        User user = mapper.map(getUserById(id), User.class);
-        if (userDto.getName() != null) {
-            user.setName(userDto.getName());
-        }
-
-        if (userDto.getEmail() != null) {
-            user.setEmail(userDto.getEmail());
-        }
+        User user = mapper.map(userDto, User.class);
+        user.setId(id);
         return mapper.map(userStorage.update(user), UserDto.class);
     }
+
+    //    @Override
+//    public UserDto updateUserById(Long id, UserDto userDto) {
+//
+//        if (getAllUsers().stream().anyMatch(u -> u.getEmail().equals(userDto.getEmail()))) {
+//            throw new UserAlreadyExist(String.format("Пользователь с email = %s уже существует", userDto.getEmail()));
+//        }
+//
+//        User user = mapper.map(getUserById(id), User.class);
+//        if (userDto.getName() != null) {
+//            user.setName(userDto.getName());
+//        }
+//
+//        if (userDto.getEmail() != null) {
+//            user.setEmail(userDto.getEmail());
+//        }
+//        return mapper.map(userStorage.update(user), UserDto.class);
+//    }
 
     @Override
     public void deleteUser(Long id) {
@@ -71,4 +78,3 @@ public class UserServiceImpl implements UserService {
         userStorage.delete(id);
     }
 }
-

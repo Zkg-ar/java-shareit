@@ -8,6 +8,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -28,30 +29,32 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@PathVariable Long itemId){
-        log.info("Получен запрос на получение вещи по id = {}",itemId);
+    public ItemDto getItemById(@PathVariable Long itemId) {
+        log.info("Получен запрос на получение вещи по id = {}", itemId);
         return itemService.getItemById(itemId);
     }
 
     @GetMapping
-    public List<ItemDto> getAllItems(@RequestHeader("X-Sharer-User-Id") Long userId){
+    public List<ItemDto> getAllItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Получен запрос на получения списка всех вещей");
         return itemService.getAllItems(userId);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchBySubstring(@RequestParam String text){
-        log.info("Запрошен товар в названии или описании которого есть слово {}",text);
+    public List<ItemDto> searchBySubstring(@RequestParam String text) {
+        log.info("Запрошен товар в названии или описании которого есть слово {}", text);
+        if (text.isEmpty()) {
+            return Collections.emptyList();
+        }
         return itemService.search(text);
 
     }
 
-    @PatchMapping
-    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") Long id,@RequestBody ItemDto itemDto){
-        log.info("Получен запрос на обновление");
-        return itemService.updateItem(itemDto,id);
+    @PatchMapping("/{itemId}")
+    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long itemId, @RequestBody ItemDto itemDto) {
+        log.info("Получен запрос на обновление вещи по id = {}",itemId);
+        return itemService.updateItem(itemDto, userId, itemId);
     }
-
 
 
 }
