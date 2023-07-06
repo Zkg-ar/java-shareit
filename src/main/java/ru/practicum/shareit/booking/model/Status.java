@@ -1,11 +1,13 @@
-
 package ru.practicum.shareit.booking.model;
 
 public enum Status {
-    WAITING("wating"),
-    APPROVED("approved"),
-    REJECTED("rejected"),
-    CANCELED("canceled");
+    WAITING("WAITING"),
+    CURRENT("CURRENT"),
+    REJECTED("REJECTED"),
+    PAST("PAST"),
+    ALL("ALL"),
+    APPROVED("APPROVED"),
+    FUTURE("FUTURE");
 
 
     private final String status;
@@ -26,4 +28,5 @@ public enum Status {
         }
         throw new IllegalArgumentException("Такой статус бронирования не существует");
     }
+
 }

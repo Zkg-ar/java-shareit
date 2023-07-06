@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Data
 public class ItemDto {
@@ -15,4 +16,6 @@ public class ItemDto {
     private String description;
     @NotNull
     private Boolean available;
+    private LocalDateTime lastBooking;
+    private LocalDateTime nextBooking;
 }

@@ -4,14 +4,23 @@ package ru.practicum.shareit.item.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.Storage;
+import ru.practicum.shareit.exceptions.ItemNotFoundException;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repository.CommentRepository;
+import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.storage.InMemoryItemStorage;
 import ru.practicum.shareit.mapper.ModelMapperUtil;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.repository.UserRepository;
 
+import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,46 +28,53 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
 
     private final ModelMapperUtil mapper;
-    private final InMemoryItemStorage itemStorage;
-    private final Storage<User> userStorage;
+    private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
 
     @Override
-    public ItemDto getItemById(Long itemId) {
-
-        return mapper.map(itemStorage.getById(itemId), ItemDto.class);
+    public ItemDto getItemById(Long userId, Long itemId) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(String.format("Пользователь с id = %d не найден", userId)));
+        return mapper.map(itemRepository.findById(itemId)
+                .orElseThrow(() -> new ItemNotFoundException(String.format("Вещь с id = %d", itemId))), ItemDto.class);
     }
 
+    @Transactional
     @Override
     public List<ItemDto> getAllItems(Long userId) {
-        return itemStorage.getAll()
+        User owner = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(String.format("Пользователь с id = %d не найден", userId)));
+        return itemRepository.findAllByOwnerOrderById(owner)
                 .stream()
-                .filter(item -> item.getUser() == userStorage.getById(userId))
                 .map(item -> mapper.map(item, ItemDto.class))
                 .collect(Collectors.toList());
-
     }
 
     @Override
     public ItemDto addItem(ItemDto itemDto, Long userId) {
         Item item = mapper.map(itemDto, Item.class);
-        item.setUser(userStorage.getById(userId));
-        return mapper.map(itemStorage.add(item), ItemDto.class);
+        item.setOwner(userRepository.findById(userId).
+                orElseThrow(() -> new UserNotFoundException(String.format("Пользователь с id = %d не найден", userId))));
+        item.setAvailable(true);
+        return mapper.map(itemRepository.save(item), ItemDto.class);
     }
 
 
     @Override
     public List<ItemDto> search(String text) {
-        return itemStorage.search(text)
+        return itemRepository.findItemByText(text)
                 .stream()
                 .map(item -> mapper.map(item, ItemDto.class))
                 .collect(Collectors.toList());
+
     }
 
     @Override
     public ItemDto updateItem(ItemDto itemDto, Long userId, Long itemId) {
-        Item item = itemStorage.getById(itemId);
-        if (item.getUser().getId() != userId) {
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(String.format("Вещь с id = %d не найдена", itemId)));
+        if (item.getOwner().getId() != userId) {
             throw new UserNotFoundException(String.format("Пользователь с id = %d не найден", userId));
         }
 
@@ -72,8 +88,20 @@ public class ItemServiceImpl implements ItemService {
             item.setAvailable(itemDto.getAvailable());
         }
 
-        return mapper.map(itemStorage.update(item), ItemDto.class);
+        return mapper.map(itemRepository.save(item), ItemDto.class);
     }
+
+    @Override
+    public CommentDto addComment(Long userId, Long itemId, CommentDto commentDto) {
+        Comment comment = mapper.map(commentDto, Comment.class);
+        comment.setCreated(LocalDateTime.now());
+        comment.setItem(itemRepository.findById(itemId).
+                orElseThrow(() -> new ItemNotFoundException(String.format("Вещь с id = %d не найден", itemId))));
+        comment.setAuthor(userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(String.format("Пользователь с id = %d не найден", userId))));
+        return mapper.map(commentRepository.save(comment), CommentDto.class);
+    }
+
 }
 
 
