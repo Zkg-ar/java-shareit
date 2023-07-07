@@ -38,9 +38,15 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = mapper.map(bookingDto, Booking.class);
         booking.setStatus(Status.WAITING);
         booking.setBooker(user);
-        item.setAvailable(false);
+
         booking.setItem(item);
 
+//        if (booking.getEnd().isBefore(booking.getStart())
+//                || booking.getStart().equals(booking.getEnd())
+//                || booking.getStart() != null
+//                || booking.getEnd() != null) {
+//            throw new DateTimeException("Проверьте введеные вами значения для даты и времени начала и окончания бронирования");
+//        }
         return mapper.map(bookingsRepository.save(booking),BookingDto.class);
     }
 
