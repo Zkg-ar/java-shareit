@@ -20,13 +20,14 @@ public class BookingDto {
     @NotNull
     private Long itemId;
     private User booker;
-    @Future
+    private Item item;
+    @Future(message = "Время начала не может быть в прошлом")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonAlias({"start"})
-    private LocalDateTime startTime;
-    @Future
+    @NotNull
+    private LocalDateTime start;
+    @Future(message = "Время окончания не может быть в прошлом")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonAlias({"end"})
-    private LocalDateTime endTime;
+    @NotNull
+    private LocalDateTime end;
     private Status status;
 }

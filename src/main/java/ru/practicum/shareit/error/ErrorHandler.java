@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.exceptions.*;
 
 import javax.validation.ValidationException;
-import java.rmi.AccessException;
 
 
 @RestControllerAdvice
@@ -32,7 +31,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleAccess(final AccessException e) {
+    public ErrorResponse handleItemAccessException(final ItemAccessException e) {
         log.error(e.getMessage());
         return new ErrorResponse("Ошибка доступа:", e.getMessage());
     }
@@ -77,14 +76,14 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handeDateTimeException(final DateTimeException e){
+    public ErrorResponse handeDateTimeException(final DateTimeException e) {
         log.error(e.getMessage());
         return new ErrorResponse("Ошибка 400:", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handeItemAlreadyBookedException(final ItemAlreadyBookedException e){
+    public ErrorResponse handeItemAlreadyBookedException(final ItemAlreadyBookedException e) {
         log.error(e.getMessage());
         return new ErrorResponse("Ошибка 400:", e.getMessage());
     }

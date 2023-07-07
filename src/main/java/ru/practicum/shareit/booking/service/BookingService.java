@@ -2,18 +2,19 @@ package ru.practicum.shareit.booking.service;
 
 import ru.practicum.shareit.booking.dto.BookingDto;
 
-import ru.practicum.shareit.booking.model.Status;
+import ru.practicum.shareit.booking.model.State;
 
-import java.rmi.AccessException;
+
 import java.util.List;
 
 public interface BookingService {
-    BookingDto addBooking(Long userId,BookingDto bookingDto);
-    BookingDto getById(Long userId,Long bookingId) throws AccessException;
+    BookingDto addBooking(Long userId, BookingDto bookingDto);
 
-    List<BookingDto> getByOwner(Long userId, Status status);
+    BookingDto getById(Long userId, Long bookingId);
 
-    List<BookingDto> getAllBookingsOfCurrentUser(Long userId, Status status);
+    List<BookingDto> getByOwner(Long userId, State state);
 
-    BookingDto approveOrRejectBooking(Long userId,Long bookingId,Boolean approved);
+    List<BookingDto> getAllBookingsOfCurrentUser(Long userId, State state);
+
+    BookingDto approveOrRejectBooking(Long userId, Long bookingId, Boolean approved);
 }

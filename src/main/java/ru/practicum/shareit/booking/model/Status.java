@@ -2,12 +2,9 @@ package ru.practicum.shareit.booking.model;
 
 public enum Status {
     WAITING("WAITING"),
-    CURRENT("CURRENT"),
     REJECTED("REJECTED"),
-    PAST("PAST"),
-    ALL("ALL"),
-    APPROVED("APPROVED"),
-    FUTURE("FUTURE");
+    CANCELED("CANCELED"),
+    APPROVED("APPROVED");
 
 
     private final String status;
