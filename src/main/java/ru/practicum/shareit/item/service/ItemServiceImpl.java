@@ -119,15 +119,6 @@ public class ItemServiceImpl implements ItemService {
         return getAllItemsWithBookings(items);
     }
 
-    //    ResponseBookingDto lastBooking = bookingMapper.toResponseBookingDto(bookingsRepository
-//            .findBookingByItemIdAndStartBeforeOrderByEndDesc(item.getId(), LocalDateTime.now())
-//            .stream().findFirst().orElse(null));
-//            item.setLastBooking(lastBooking);
-//
-//    ResponseBookingDto nextBooking = bookingMapper.toResponseBookingDto(bookingsRepository
-//            .findBookingByItem_IdAndStartAfterAndStatusEqualsOrderByStart(item.getId(), LocalDateTime.now(), Status.APPROVED)
-//            .stream().findFirst().orElse(null));
-//            item.setNextBooking(nextBooking);
     private List<ItemDtoWithBookings> getAllItemsWithBookings(List<ItemDtoWithBookings> list) {
         List<Booking> bookings = bookingsRepository
                 .findAll()
