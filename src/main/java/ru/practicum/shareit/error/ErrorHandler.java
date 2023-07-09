@@ -30,30 +30,23 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleItemAccessException(final ItemAccessException e) {
         log.error(e.getMessage());
-        return new ErrorResponse("Ошибка доступа:", e.getMessage());
-    }
-
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleUserNotFound(final UserNotFoundException e) {
-        log.error(e.getMessage());
         return new ErrorResponse("Ошибка 404:", e.getMessage());
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleBookingNotFound(final BookingNotFoundExceptions e) {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBookingAlreadyStatusChanged(final BookingStatusAlreadyChangedException e) {
         log.error(e.getMessage());
-        return new ErrorResponse("Ошибка 404:", e.getMessage());
+        return new ErrorResponse("Ошибка 400:", e.getMessage());
     }
+
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleItemNotFound(final ItemNotFoundException e) {
+    public ErrorResponse handleBookingNotFound(final NotFoundException e) {
         log.error(e.getMessage());
         return new ErrorResponse("Ошибка 404:", e.getMessage());
     }
@@ -87,4 +80,12 @@ public class ErrorHandler {
         log.error(e.getMessage());
         return new ErrorResponse("Ошибка 400:", e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handeNoSuchStateException(final NoSuchStateException e) {
+        log.error(e.getMessage());
+        return new ErrorResponse("Unknown state: UNSUPPORTED_STATUS", e.getMessage());
+    }
+
 }

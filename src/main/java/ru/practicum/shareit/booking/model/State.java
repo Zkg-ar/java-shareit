@@ -6,7 +6,8 @@ public enum State {
     PAST("PAST"),
     WAITING("WAITING"),
     REJECTED("REJECTED"),
-    FUTURE("FUTURE");
+    FUTURE("FUTURE"),
+    UNSUPPORTED_STATUS("UNSUPPORTED_STATUS");
 
     private final String state;
 

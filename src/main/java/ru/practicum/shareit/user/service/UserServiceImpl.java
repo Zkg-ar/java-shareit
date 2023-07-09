@@ -2,20 +2,21 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.UserAlreadyExist;
-import ru.practicum.shareit.exceptions.UserNotFoundException;
 import ru.practicum.shareit.mapper.ModelMapperUtil;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
-import ru.practicum.shareit.user.storage.InMemoryUserStorage;
 
+import javax.transaction.Transactional;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserService {
 
 
@@ -43,22 +44,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserById(Long id) {
-        return mapper.map(userRepository.findById(id).orElseThrow(()->new UserNotFoundException(String.format("Пользователь с id = %d  +  не найден!",id))), UserDto.class);
+        return mapper.map(userRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d  +  не найден!", id))), UserDto.class);
     }
 
-    //    @Override
-//    public UserDto updateUserById(Long id, UserDto userDto) {
-//        User user = mapper.map(userDto, User.class);
-//        user.setId(id);
-//        return mapper.map(userRepository.save(user), UserDto.class);
-//    }
     @Override
     public UserDto updateUserById(Long id, UserDto userDto) {
         if (userDto.getId() == null) {
             userDto.setId(id);
         }
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Пользователь с ID=" + id + " не найден!"));
+                .orElseThrow(() -> new NotFoundException("Пользователь с ID=" + id + " не найден!"));
         if (userDto.getName() != null) {
             user.setName(userDto.getName());
         }
@@ -79,7 +74,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long id) {
         if (getUserById(id) == null) {
-            throw new UserNotFoundException(String.format("Пользователь с id = %s не найден", id));
+            throw new NotFoundException(String.format("Пользователь с id = %s не найден", id));
         }
         userRepository.deleteById(id);
     }

@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.Storage;
+import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.UserAlreadyExist;
-import ru.practicum.shareit.exceptions.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
 
 
@@ -47,7 +47,7 @@ public class InMemoryUserStorage extends Storage<User> {
                 .stream()
                 .filter(x -> x.getId() == id)
                 .findFirst()
-                .orElseThrow(() -> new UserNotFoundException(String.format("Пользователь с id = %d не найден", id)));
+                .orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d не найден", id)));
     }
 
     public void delete(Long id) {

@@ -8,13 +8,13 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "comment")
+@Table(name = "comments")
 @Data
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "text",length = 200)
+    @Column(name = "text", length = 200)
     private String text;
     @ManyToOne
     @JoinColumn(name = "item_id")

@@ -3,11 +3,15 @@ package ru.practicum.shareit.error;
 
 public class ErrorResponse {
     private String error;
-    private String description;
+    private String message;
 
-    public ErrorResponse(String error, String description) {
+    public ErrorResponse(String error, String message) {
         this.error = error;
-        this.description = description;
+        this.message = message;
+    }
+
+    public ErrorResponse(String message) {
+        this.message = message;
     }
 
 
@@ -15,8 +19,8 @@ public class ErrorResponse {
         return error;
     }
 
-    public String getDescription() {
-        return description;
+    public String getMessage() {
+        return message;
     }
 }
 

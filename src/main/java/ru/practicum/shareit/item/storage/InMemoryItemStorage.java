@@ -4,7 +4,7 @@ package ru.practicum.shareit.item.storage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.Storage;
-import ru.practicum.shareit.exceptions.ItemNotFoundException;
+import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 
 
@@ -32,7 +32,7 @@ public class InMemoryItemStorage extends Storage<Item> {
                 .stream()
                 .filter(x -> x.getId() == id)
                 .findFirst()
-                .orElseThrow(() -> new ItemNotFoundException(String.format("Вещь с id = %d не найдена", id)));
+                .orElseThrow(() -> new NotFoundException(String.format("Вещь с id = %d не найдена", id)));
     }
 
     @Override
