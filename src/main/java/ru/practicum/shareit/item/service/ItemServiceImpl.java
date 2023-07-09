@@ -51,12 +51,12 @@ public class ItemServiceImpl implements ItemService {
 
         ItemDtoWithBookings itemDtoWithBookings = mapper.map(item, ItemDtoWithBookings.class);
         if (item.getOwner().getId() == userId) {
-            ResponseBookingDto lastBooking = bookingMapper.ConvertBookingToResponseBookingDto(bookingsRepository
+            ResponseBookingDto lastBooking = bookingMapper.convertBookingToResponseBookingDto(bookingsRepository
                     .findBookingByItemIdAndStartBeforeOrderByEndDesc(itemId, LocalDateTime.now())
                     .stream().findFirst().orElse(null));
             itemDtoWithBookings.setLastBooking(lastBooking);
 
-            ResponseBookingDto nextBooking = bookingMapper.ConvertBookingToResponseBookingDto(bookingsRepository
+            ResponseBookingDto nextBooking = bookingMapper.convertBookingToResponseBookingDto(bookingsRepository
                     .findBookingByItem_IdAndStartAfterAndStatusEqualsOrderByStart(itemId, LocalDateTime.now(), Status.APPROVED)
                     .stream().findFirst().orElse(null));
             itemDtoWithBookings.setNextBooking(nextBooking);
@@ -81,12 +81,12 @@ public class ItemServiceImpl implements ItemService {
 
     private List<ItemDtoWithBookings> getAllItemsWithBookings(List<ItemDtoWithBookings> list) {
         for (ItemDtoWithBookings item : list) {
-            ResponseBookingDto lastBooking = bookingMapper.ConvertBookingToResponseBookingDto(bookingsRepository
+            ResponseBookingDto lastBooking = bookingMapper.convertBookingToResponseBookingDto(bookingsRepository
                     .findBookingByItemIdAndStartBeforeOrderByEndDesc(item.getId(), LocalDateTime.now())
                     .stream().findFirst().orElse(null));
             item.setLastBooking(lastBooking);
 
-            ResponseBookingDto nextBooking = bookingMapper.ConvertBookingToResponseBookingDto(bookingsRepository
+            ResponseBookingDto nextBooking = bookingMapper.convertBookingToResponseBookingDto(bookingsRepository
                     .findBookingByItem_IdAndStartAfterAndStatusEqualsOrderByStart(item.getId(), LocalDateTime.now(), Status.APPROVED)
                     .stream().findFirst().orElse(null));
             item.setNextBooking(nextBooking);
@@ -97,8 +97,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto addItem(ItemDto itemDto, Long userId) {
         Item item = mapper.map(itemDto, Item.class);
-        item.setOwner(userRepository.findById(userId).
-                orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d не найден", userId))));
+        item.setOwner(userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d не найден", userId))));
         item.setAvailable(true);
 
         return mapper.map(itemRepository.save(item), ItemDto.class);
@@ -116,7 +116,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto updateItem(ItemDto itemDto, Long userId, Long itemId) {
-        Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException(String.format("Вещь с id = %d не найдена", itemId)));
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NotFoundException(String.format("Вещь с id = %d не найдена", itemId)));
         if (item.getOwner().getId() != userId) {
             throw new NotFoundException(String.format("Пользователь с id = %d не найден", userId));
         }
