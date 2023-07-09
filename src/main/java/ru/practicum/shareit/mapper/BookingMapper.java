@@ -12,6 +12,7 @@ public class BookingMapper {
             return null;
         }
         return ResponseBookingDto.builder()
+                .id(booking.getId())
                 .itemId(booking.getItem().getId())
                 .bookerId(booking.getBooker().getId())
                 .build();

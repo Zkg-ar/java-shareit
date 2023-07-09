@@ -72,7 +72,7 @@ public class BookingServiceImpl implements BookingService {
                         .map(booking -> mapper.map(booking, BookingDto.class))
                         .collect(Collectors.toList());
             case PAST:
-                return bookingsRepository.findAllByItem_OwnerAndEndBeforeOrderByStartIdDesc(owner, now)
+                return bookingsRepository.findAllByItem_OwnerAndEndBeforeOrderByStartDesc(owner, now)
                         .stream()
                         .map(booking -> mapper.map(booking, BookingDto.class))
                         .collect(Collectors.toList());

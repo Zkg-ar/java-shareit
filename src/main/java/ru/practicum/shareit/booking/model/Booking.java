@@ -5,9 +5,9 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.Positive;
 
 import java.time.LocalDateTime;
+
 @Entity
 @Data
 @Table(name = "bookings")

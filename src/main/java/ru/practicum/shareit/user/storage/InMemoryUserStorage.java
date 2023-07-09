@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.Storage;
+import ru.practicum.shareit.exceptions.AlreadyExistException;
 import ru.practicum.shareit.exceptions.NotFoundException;
-import ru.practicum.shareit.exceptions.UserAlreadyExist;
 import ru.practicum.shareit.user.model.User;
 
 
@@ -27,7 +27,7 @@ public class InMemoryUserStorage extends Storage<User> {
     public User add(User newUser) {
         for (User user : users.values()) {
             if (user.getEmail().equals(newUser.getEmail())) {
-                throw new UserAlreadyExist(String.format("Пользователь с email = %s уже существует", newUser.getEmail()));
+                throw new AlreadyExistException(String.format("Пользователь с email = %s уже существует", newUser.getEmail()));
             }
         }
 
@@ -62,7 +62,7 @@ public class InMemoryUserStorage extends Storage<User> {
         Set<String> emails = users.values().stream().map(User::getEmail).collect(Collectors.toSet());
 
         if (emails.contains(user.getEmail()) && (!user.getEmail().equals(updateUser.getEmail()))) {
-            throw new UserAlreadyExist(String.format("Email %s уже существует.", user.getEmail()));
+            throw new AlreadyExistException(String.format("Email %s уже существует.", user.getEmail()));
         }
         if (user.getName() != null && !updateUser.getName().isBlank()) {
             updateUser.setName(user.getName());

@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class ResponseBookingDto {
+    Long id;
     Long itemId;
     Long bookerId;
 }

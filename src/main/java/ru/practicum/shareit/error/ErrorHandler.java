@@ -54,7 +54,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleUserAlreadyExist(final UserAlreadyExist e) {
+    public ErrorResponse handleUserAlreadyExist(final AlreadyExistException e) {
         log.error(e.getMessage());
         return new ErrorResponse("Ошибка 409:", e.getMessage());
     }

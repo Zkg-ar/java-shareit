@@ -52,12 +52,12 @@ public class ItemServiceImpl implements ItemService {
         ItemDtoWithBookings itemDtoWithBookings = mapper.map(item, ItemDtoWithBookings.class);
         if (item.getOwner().getId() == userId) {
             ResponseBookingDto lastBooking = bookingMapper.ConvertBookingToResponseBookingDto(bookingsRepository
-                    .findBookingByItem_IdAndEndIsBeforeOrderByEndDesc(itemId, LocalDateTime.now())
+                    .findBookingByItemIdAndStartBeforeOrderByEndDesc(itemId, LocalDateTime.now())
                     .stream().findFirst().orElse(null));
             itemDtoWithBookings.setLastBooking(lastBooking);
 
             ResponseBookingDto nextBooking = bookingMapper.ConvertBookingToResponseBookingDto(bookingsRepository
-                    .findBookingByItem_IdAndEndIsBeforeAndStatusEqualsOrderByEndDesc(itemId, LocalDateTime.now(), Status.APPROVED)
+                    .findBookingByItem_IdAndStartAfterAndStatusEqualsOrderByStart(itemId, LocalDateTime.now(), Status.APPROVED)
                     .stream().findFirst().orElse(null));
             itemDtoWithBookings.setNextBooking(nextBooking);
         }
@@ -82,12 +82,12 @@ public class ItemServiceImpl implements ItemService {
     private List<ItemDtoWithBookings> getAllItemsWithBookings(List<ItemDtoWithBookings> list) {
         for (ItemDtoWithBookings item : list) {
             ResponseBookingDto lastBooking = bookingMapper.ConvertBookingToResponseBookingDto(bookingsRepository
-                    .findBookingByItem_IdAndEndIsBeforeOrderByEndDesc(item.getId(), LocalDateTime.now())
+                    .findBookingByItemIdAndStartBeforeOrderByEndDesc(item.getId(), LocalDateTime.now())
                     .stream().findFirst().orElse(null));
             item.setLastBooking(lastBooking);
 
             ResponseBookingDto nextBooking = bookingMapper.ConvertBookingToResponseBookingDto(bookingsRepository
-                    .findBookingByItem_IdAndEndIsBeforeAndStatusEqualsOrderByEndDesc(item.getId(), LocalDateTime.now(), Status.APPROVED)
+                    .findBookingByItem_IdAndStartAfterAndStatusEqualsOrderByStart(item.getId(), LocalDateTime.now(), Status.APPROVED)
                     .stream().findFirst().orElse(null));
             item.setNextBooking(nextBooking);
         }

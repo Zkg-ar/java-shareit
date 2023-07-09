@@ -30,7 +30,7 @@ public class ItemController {
     @GetMapping("/{itemId}")
     public ItemDtoWithBookings getItemById(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long itemId) {
         log.info("Получен запрос на получение вещи по id = {}", itemId);
-        return itemService.getItemById(userId,itemId);
+        return itemService.getItemById(userId, itemId);
     }
 
 
@@ -58,9 +58,9 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long itemId, @Valid @RequestBody CommentDto commentDto){
-        log.info("Пользователь {} написал комментарий:{}",userId,commentDto);
-        return itemService.addComment(userId,itemId,commentDto);
+    public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long itemId, @Valid @RequestBody CommentDto commentDto) {
+        log.info("Пользователь {} написал комментарий:{}", userId, commentDto);
+        return itemService.addComment(userId, itemId, commentDto);
     }
 
 }

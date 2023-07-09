@@ -2,8 +2,8 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exceptions.AlreadyExistException;
 import ru.practicum.shareit.exceptions.NotFoundException;
-import ru.practicum.shareit.exceptions.UserAlreadyExist;
 import ru.practicum.shareit.mapper.ModelMapperUtil;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
             UserDto dto = mapper.map(userRepository.save(user), UserDto.class);
             return dto;
         } catch (ConstraintViolationException exception) {
-            throw new UserAlreadyExist(String.format("Пользователь с email = %s уже существует", userDto.getEmail()));
+            throw new AlreadyExistException(String.format("Пользователь с email = %s уже существует", userDto.getEmail()));
         }
     }
 
@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
                     .allMatch(u -> u.getId().equals(userDto.getId()))) {
                 user.setEmail(userDto.getEmail());
             } else {
-                throw new UserAlreadyExist("Пользователь с E-mail=" + user.getEmail() + " уже существует!");
+                throw new AlreadyExistException("Пользователь с E-mail=" + user.getEmail() + " уже существует!");
             }
 
         }
