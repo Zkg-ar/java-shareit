@@ -27,9 +27,6 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
-//    @OneToMany
-//    @JoinColumn(name = "item_id")
-//    private List<Booking> bookings = new ArrayList<>();
     @Transient
     private List<CommentDto> comments = new ArrayList<>();
 }
