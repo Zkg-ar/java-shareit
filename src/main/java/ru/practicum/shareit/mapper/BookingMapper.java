@@ -7,7 +7,7 @@ import ru.practicum.shareit.booking.model.Booking;
 
 @Component
 public class BookingMapper {
-    public ResponseBookingDto convertBookingToResponseBookingDto(Booking booking) {
+    public ResponseBookingDto toResponseBookingDto(Booking booking) {
         if (booking == null) {
             return null;
         }
@@ -17,4 +17,5 @@ public class BookingMapper {
                 .bookerId(booking.getBooker().getId())
                 .build();
     }
+
 }

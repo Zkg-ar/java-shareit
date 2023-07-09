@@ -1,6 +1,9 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.user.model.User;
 
@@ -9,9 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Data
 @Entity
 @Table(name = "items")
+@Getter
+@Setter
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +29,9 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
+//    @OneToMany
+//    @JoinColumn(name = "item_id")
+//    private List<Booking> bookings = new ArrayList<>();
     @Transient
     private List<CommentDto> comments = new ArrayList<>();
 }

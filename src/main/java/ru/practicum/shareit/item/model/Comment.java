@@ -1,6 +1,9 @@
 package ru.practicum.shareit.item.model;
 
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
@@ -8,7 +11,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "comments")
-@Data
+@Getter
+@Setter
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,4 +27,5 @@ public class Comment {
     private User author;
     @Column(name = "created_date")
     private LocalDateTime created;
+
 }
