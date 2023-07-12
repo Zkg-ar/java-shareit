@@ -3,21 +3,24 @@ package ru.practicum.shareit.request.model;
 import lombok.Data;
 import ru.practicum.shareit.user.model.User;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
  * TODO Sprint add-item-requests.
  */
 @Data
+@Entity
 public class ItemRequest {
-    @Positive
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
+    @Column(name = "description", nullable = false, length = 200)
     private String description;
-    @NotBlank
+    @ManyToOne
     private User requester;
+    @Column(name = "created_time", nullable = false)
     private LocalDateTime created;
 
 }

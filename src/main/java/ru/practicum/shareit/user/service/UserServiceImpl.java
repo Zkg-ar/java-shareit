@@ -2,33 +2,41 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exceptions.UserNotFoundException;
+import ru.practicum.shareit.exceptions.AlreadyExistException;
+import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.mapper.ModelMapperUtil;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.storage.InMemoryUserStorage;
+import ru.practicum.shareit.user.repository.UserRepository;
 
+import javax.transaction.Transactional;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserService {
 
 
-    private final InMemoryUserStorage userStorage;
+    private final UserRepository userRepository;
     private final ModelMapperUtil mapper;
 
     @Override
     public UserDto addUser(UserDto userDto) {
-        User user = mapper.map(userDto, User.class);
-        UserDto dto = mapper.map(userStorage.add(user), UserDto.class);
-        return dto;
+        try {
+            User user = mapper.map(userDto, User.class);
+            UserDto dto = mapper.map(userRepository.save(user), UserDto.class);
+            return dto;
+        } catch (ConstraintViolationException exception) {
+            throw new AlreadyExistException(String.format("Пользователь с email = %s уже существует", userDto.getEmail()));
+        }
     }
 
     @Override
     public List<UserDto> getAllUsers() {
-        return userStorage.getAll()
+        return userRepository.findAll()
                 .stream()
                 .map(user -> mapper.map(user, UserDto.class))
                 .collect(Collectors.toList());
@@ -36,21 +44,38 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserById(Long id) {
-        return mapper.map(userStorage.getById(id), UserDto.class);
+        return mapper.map(userRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d  +  не найден!", id))), UserDto.class);
     }
 
     @Override
     public UserDto updateUserById(Long id, UserDto userDto) {
-        User user = mapper.map(userDto, User.class);
-        user.setId(id);
-        return mapper.map(userStorage.update(user), UserDto.class);
+        if (userDto.getId() == null) {
+            userDto.setId(id);
+        }
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Пользователь с ID=" + id + " не найден!"));
+        if (userDto.getName() != null) {
+            user.setName(userDto.getName());
+        }
+        if ((userDto.getEmail() != null) && (userDto.getEmail() != user.getEmail())) {
+            if (userRepository.findByEmail(userDto.getEmail())
+                    .stream()
+                    .filter(u -> u.getEmail().equals(userDto.getEmail()))
+                    .allMatch(u -> u.getId().equals(userDto.getId()))) {
+                user.setEmail(userDto.getEmail());
+            } else {
+                throw new AlreadyExistException("Пользователь с E-mail=" + user.getEmail() + " уже существует!");
+            }
+
+        }
+        return mapper.map(userRepository.save(user), UserDto.class);
     }
 
     @Override
     public void deleteUser(Long id) {
         if (getUserById(id) == null) {
-            throw new UserNotFoundException(String.format("Пользователь с id = %s не найден", id));
+            throw new NotFoundException(String.format("Пользователь с id = %s не найден", id));
         }
-        userStorage.delete(id);
+        userRepository.deleteById(id);
     }
 }
