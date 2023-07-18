@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserById(Long id) {
-        return mapper.map(userRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d  +  не найден!", id))), UserDto.class);
+        return mapper.map(userRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d не найден!", id))), UserDto.class);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
             userDto.setId(id);
         }
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Пользователь с ID=" + id + " не найден!"));
+                .orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d не найден!", id)));
         if (userDto.getName() != null) {
             user.setName(userDto.getName());
         }
@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long id) {
         if (getUserById(id) == null) {
-            throw new NotFoundException(String.format("Пользователь с id = %s не найден", id));
+            throw new NotFoundException(String.format("Пользователь с id = %d не найден", id));
         }
         userRepository.deleteById(id);
     }

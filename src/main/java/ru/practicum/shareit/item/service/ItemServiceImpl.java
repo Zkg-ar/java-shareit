@@ -2,6 +2,7 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.ResponseBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
@@ -18,6 +19,7 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.mapper.BookingMapper;
 import ru.practicum.shareit.mapper.CommentMapper;
 import ru.practicum.shareit.mapper.ModelMapperUtil;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -48,6 +50,7 @@ public class ItemServiceImpl implements ItemService {
         item.setOwner(userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d не найден", userId))));
         item.setAvailable(true);
+        item.setRequestId(item.getRequestId());
 
         return mapper.map(itemRepository.save(item), ItemDto.class);
     }
@@ -74,8 +77,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> search(String text) {
-        return itemRepository.findItemByText(text)
+    public List<ItemDto> search(String text,Pageable page) {
+        return itemRepository.findItemByText(text,page)
                 .stream()
                 .map(item -> mapper.map(item, ItemDto.class))
                 .collect(Collectors.toList());
@@ -108,20 +111,20 @@ public class ItemServiceImpl implements ItemService {
 
 
     @Override
-    public List<ItemDtoWithBookings> getAllItems(Long userId) {
+    public List<ItemDtoWithBookings> getAllItems(Long userId, Pageable page) {
         User owner = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d не найден", userId)));
-        List<ItemDtoWithBookings> items = itemRepository.findAllByOwnerOrderById(owner)
+        List<ItemDtoWithBookings> items = itemRepository.findAllByOwnerOrderById(owner,page)
                 .stream()
                 .map(item -> mapper.map(item, ItemDtoWithBookings.class))
                 .collect(Collectors.toList());
 
-        return getAllItemsWithBookings(items);
+        return getAllItemsWithBookings(items,page);
     }
 
-    private List<ItemDtoWithBookings> getAllItemsWithBookings(List<ItemDtoWithBookings> list) {
+    private List<ItemDtoWithBookings> getAllItemsWithBookings(List<ItemDtoWithBookings> list,Pageable page) {
         List<Booking> bookings = bookingsRepository
-                .findAll()
+                .findAll(page)
                 .stream()
                 .collect(Collectors.toList());
         for (ItemDtoWithBookings item : list) {

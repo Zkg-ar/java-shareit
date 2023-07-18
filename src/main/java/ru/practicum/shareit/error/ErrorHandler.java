@@ -76,6 +76,14 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handeIllegalArgumentException(final IllegalArgumentException e) {
+        log.error(e.getMessage());
+        return new ErrorResponse("Ошибка 400:", e.getMessage());
+    }
+
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handeItemAlreadyBookedException(final ItemAlreadyBookedException e) {
         log.error(e.getMessage());
         return new ErrorResponse("Ошибка 400:", e.getMessage());
