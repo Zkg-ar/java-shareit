@@ -37,7 +37,7 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = mapper.map(bookingDto, Booking.class);
 
         if (item.getOwner().getId() == userId) {
-            throw new NotFoundException("Владелец вещью не может ее бронировать");
+            throw new NotFoundException("Владелец вещи не может ее бронировать");
         }
 
         booking.setStatus(Status.WAITING);
@@ -50,6 +50,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto getById(Long userId, Long bookingId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d не найден", userId)));
         Booking booking = bookingsRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException(String.format("Бронирование с id = %d не найдено", bookingId)));
         Long bookerId = booking.getBooker().getId();

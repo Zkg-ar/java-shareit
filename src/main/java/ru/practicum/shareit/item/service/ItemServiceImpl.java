@@ -88,9 +88,9 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDtoWithBookings getItemById(Long userId, Long itemId) {
         userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d не найден", userId)));
+                .orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d не найден!", userId)));
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new NotFoundException(String.format("Вещь с id = %d", itemId)));
+                .orElseThrow(() -> new NotFoundException(String.format("Вещь с id = %d не найдена", itemId)));
 
         ItemDtoWithBookings itemDtoWithBookings = mapper.map(item, ItemDtoWithBookings.class);
         if (item.getOwner().getId() == userId) {
