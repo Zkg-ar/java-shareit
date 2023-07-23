@@ -34,4 +34,12 @@ public class BookingDto {
     private LocalDateTime end;
     private Status status;
 
+    public BookingDto(Long itemId, UserDto booker, ItemDto item, LocalDateTime start, LocalDateTime end, Status status) {
+        this.itemId = itemId;
+        this.booker = booker;
+        this.item = item;
+        this.start = start;
+        this.end = end;
+        this.status = status;
+    }
 }

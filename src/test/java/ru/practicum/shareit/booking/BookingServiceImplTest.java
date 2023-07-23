@@ -88,25 +88,28 @@ public class BookingServiceImplTest {
 
     @BeforeEach
     public void setup() {
-        userDto = new UserDto(1L, "name", "email@ya.ru");
-        userDto2 = new UserDto(2L, "name2", "email2@ya.ru");
-        itemDto = new ItemDto(1L, "name", "description", true);
-        bookingDto = new BookingDto(1L,
-                1L,
+        userDto = new UserDto("name", "email@ya.ru");
+        userDto = userService.addUser(userDto);
+        userDto2 = new UserDto("name2", "email2@ya.ru");
+        userDto2 = userService.addUser(userDto2);
+        itemDto = new ItemDto("name", "description", true);
+        itemDto = itemService.addItem(itemDto, userDto.getId());
+        bookingDto = new BookingDto(
+                itemDto.getId(),
                 userDto2,
                 itemDto,
                 LocalDateTime.of(2020, 12, 5, 1, 1),
                 LocalDateTime.of(2025, 12, 7, 1, 1),
                 Status.WAITING);
+        bookingDto = bookingService.addBooking(userDto2.getId(),bookingDto);
         responseBookingDto = ResponseBookingDto
                 .builder()
                 .id(1L)
                 .itemId(1L)
                 .bookerId(1L)
                 .build();
-        userService.addUser(userDto);
-        userService.addUser(userDto2);
-        itemService.addItem(itemDto, userDto.getId());
+
+
     }
 
     @Test
@@ -132,7 +135,7 @@ public class BookingServiceImplTest {
 
         final NotFoundException exception = Assertions.assertThrows(
                 NotFoundException.class,
-                () -> bookingService.addBooking(1L, bookingDto));
+                () -> bookingService.addBooking(userDto.getId(), bookingDto));
 
         assertEquals("Владелец вещи не может ее бронировать", exception.getMessage());
     }
@@ -145,7 +148,7 @@ public class BookingServiceImplTest {
 
         final NotFoundException exception = Assertions.assertThrows(
                 NotFoundException.class,
-                () -> bookingService.addBooking(2L, bookingDto));
+                () -> bookingService.addBooking(userDto2.getId(), bookingDto));
 
         assertEquals(String.format("Вещь с id = %d не найдена", bookingDto.getItemId()), exception.getMessage());
     }
@@ -170,22 +173,22 @@ public class BookingServiceImplTest {
         lenient().when(bookingsRepository.findById(anyLong()))
                 .thenReturn(Optional.ofNullable(mapper.map(bookingDto, Booking.class)));
 
-        BookingDto bookingDtoActual = bookingService.getById(1L, 1L);
+        BookingDto bookingDtoActual = bookingService.getById(userDto.getId(), bookingDto.getId());
 
         assertEquals(bookingDto, bookingDtoActual);
     }
 
     @Test
     void getBookingByIdWhenBookingNotFoundTest() {
-
+        Long bookingId = 100L;
         lenient().when(bookingsRepository.save(any()))
-                .thenThrow(new NotFoundException(String.format("Бронирование с id = %d не найдено", bookingDto.getId())));
+                .thenThrow(new NotFoundException(String.format("Бронирование с id = %d не найдено", bookingId)));
 
         final NotFoundException exception = Assertions.assertThrows(
                 NotFoundException.class,
-                () -> bookingService.getById(userDto.getId(), bookingDto.getId()));
+                () -> bookingService.getById(userDto.getId(),bookingId ));
 
-        assertEquals(String.format("Бронирование с id = %d не найдено", bookingDto.getId()), exception.getMessage());
+        assertEquals(String.format("Бронирование с id = %d не найдено", bookingId), exception.getMessage());
 
     }
 
@@ -205,8 +208,8 @@ public class BookingServiceImplTest {
 
     @Test
     void getBookingByIdWhenAccessExceptionTest() {
-        UserDto userDto3 = new UserDto(3L, "name", "3email@email");
-        userService.addUser(userDto3);
+        UserDto userDto3 = userService.addUser( new UserDto("name", "3email@email"));
+
         bookingService.addBooking(userDto2.getId(), bookingDto);
         lenient().when(bookingsRepository.save(any()))
                 .thenThrow(new ItemAccessException("У вас нет доступа к данному бронированию"));
@@ -403,14 +406,14 @@ public class BookingServiceImplTest {
 
     @Test
     void approveOrRejectWhenBookingNotFoundTest() {
-
+        Long bookingId = 100L;
         lenient().when(bookingsRepository.save(mapper.map(bookingDto, Booking.class)))
-                .thenThrow(new NotFoundException(String.format("Бронирование с id = %d не найдено", bookingDto.getId())));
+                .thenThrow(new NotFoundException(String.format("Бронирование с id = %d не найдено",bookingId)));
 
         final NotFoundException exception = Assertions.assertThrows(
                 NotFoundException.class,
-                () -> bookingService.approveOrRejectBooking(userDto.getId(), bookingDto.getId(), true));
-        assertEquals(String.format("Бронирование с id = %d не найдено", bookingDto.getId()), exception.getMessage());
+                () -> bookingService.approveOrRejectBooking(userDto.getId(), bookingId, true));
+        assertEquals(String.format("Бронирование с id = %d не найдено", bookingId), exception.getMessage());
     }
 
     @Test

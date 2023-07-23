@@ -21,4 +21,10 @@ public class CommentDto {
     private String authorName;
     @JsonProperty("created")
     private LocalDateTime created;
+
+    public CommentDto(String text, String authorName, LocalDateTime created) {
+        this.text = text;
+        this.authorName = authorName;
+        this.created = created;
+    }
 }

@@ -23,15 +23,13 @@ public class BookingJsonTest {
     void testBookingDto() throws Exception {
         BookingDto bookingDto = new BookingDto(1L,
                 1L,
-                new UserDto(1L, "user", "email@mail.eu"),
+                new UserDto("user", "email@mail.eu"),
                 new ItemDto(1L, "item", "description", true, 1L),
                 LocalDateTime.of(2022, 12, 5, 1, 1),
                 LocalDateTime.of(2023, 12, 5, 1, 1),
-
                 Status.WAITING);
         JsonContent<BookingDto> result = json.write(bookingDto);
 
-        assertThat(result).extractingJsonPathStringValue("$.id").isEqualTo(1);
         assertThat(result).extractingJsonPathNumberValue("$.itemId").isEqualTo(1);
         assertThat(result).extractingJsonPathStringValue("$.start").isEqualTo(bookingDto.getStart().toString());
         assertThat(result).extractingJsonPathStringValue("$.end").isEqualTo(bookingDto.getEnd().toString());

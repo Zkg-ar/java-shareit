@@ -49,9 +49,9 @@ public class UserControllerTest {
         mvc = MockMvcBuilders
                 .standaloneSetup(userController)
                 .build();
-        userDto = new UserDto(1L, "name", "email@ya.ru");
-        userDto2 = new UserDto(2L, "", "mail");
-        userDto3 = new UserDto(3L, "second", "second@mail.ru");
+        userDto = new UserDto("name", "email@ya.ru");
+        userDto2 = new UserDto("", "mail");
+        userDto3 = new UserDto("second", "second@mail.ru");
     }
 
     @Test

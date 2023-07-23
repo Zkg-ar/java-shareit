@@ -17,6 +17,7 @@ import ru.practicum.shareit.request.service.ItemRequestService;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -59,7 +60,7 @@ public class RequestControllerTest {
     }
 
     @Test
-    public void addTest() throws Exception {
+    public void addItemRequestTest() throws Exception {
         when(itemRequestService.addItemRequest(anyLong(), any()))
                 .thenReturn(itemRequestDto);
 
@@ -92,5 +93,40 @@ public class RequestControllerTest {
                 .andExpect(jsonPath("$.created[2]", is(itemRequestDto.getCreated().getDayOfMonth())));
     }
 
+    @Test
+    public void getAllTest() throws Exception {
+        when(itemRequestService.getAll(anyLong()))
+                .thenReturn(List.of(itemRequestDto));
+
+        mvc.perform(get("/requests")
+                        .content(mapper.writeValueAsString(itemRequestDto))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .header("X-Sharer-User-Id", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].id", is(itemRequestDto.getId()), Long.class))
+                .andExpect(jsonPath("$[0].description", is(itemRequestDto.getDescription())))
+                .andExpect(jsonPath("$[0].created[0]", is(itemRequestDto.getCreated().getYear())))
+                .andExpect(jsonPath("$[0].created[1]", is(itemRequestDto.getCreated().getMonthValue())))
+                .andExpect(jsonPath("$[0].created[2]", is(itemRequestDto.getCreated().getDayOfMonth())));
+    }
+
+    @Test
+    public void getAllWithPaginationTest() throws Exception {
+        when(itemRequestService.getAllWithPagination(anyLong(),any()))
+                .thenReturn(List.of(itemRequestDto));
+
+        mvc.perform(get("/requests/all")
+                        .content(mapper.writeValueAsString(itemRequestDto))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .header("X-Sharer-User-Id", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].id", is(itemRequestDto.getId()), Long.class))
+                .andExpect(jsonPath("$[0].description", is(itemRequestDto.getDescription())))
+                .andExpect(jsonPath("$[0].created[0]", is(itemRequestDto.getCreated().getYear())))
+                .andExpect(jsonPath("$[0].created[1]", is(itemRequestDto.getCreated().getMonthValue())))
+                .andExpect(jsonPath("$[0].created[2]", is(itemRequestDto.getCreated().getDayOfMonth())));
+    }
 
 }

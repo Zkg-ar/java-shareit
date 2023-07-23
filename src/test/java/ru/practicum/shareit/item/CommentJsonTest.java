@@ -25,7 +25,7 @@ public class CommentJsonTest {
 
         assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(1);
         assertThat(result).extractingJsonPathStringValue("$.authorName").isEqualTo("Zaven");
-        assertThat(result).extractingJsonPathStringValue("$.text").isEqualTo("cool");
+        assertThat(result).extractingJsonPathStringValue("$.text").isEqualTo("Cool");
 
     }
 }

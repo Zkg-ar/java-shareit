@@ -53,7 +53,6 @@ public class BookingControllerTest {
     private final ObjectMapper mapper = new ObjectMapper()
             .registerModule(new JavaTimeModule());
 
-
     private MockMvc mvc;
 
     private BookingDto bookingDto;
@@ -67,12 +66,12 @@ public class BookingControllerTest {
                 .standaloneSetup(bookingController)
                 .build();
         itemDto = new ItemDto(1L, "item", "description", true, 1L);
-        userDto = new UserDto(1L, "user", "email@mail.eu");
+        userDto = new UserDto("user", "email@mail.eu");
         bookingDto = new BookingDto(1L,
                 1L,
                 userDto,
                 itemDto,
-                LocalDateTime.of(2022, 12, 5, 1, 1),
+                LocalDateTime.of(2023, 12, 5, 1, 1),
                 LocalDateTime.of(2023, 12, 7, 1, 1),
                 Status.WAITING);
     }
@@ -89,6 +88,7 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+
     }
 
     @Test

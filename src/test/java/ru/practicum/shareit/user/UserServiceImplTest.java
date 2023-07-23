@@ -37,7 +37,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 @TestPropertySource(properties = {"db.name=test"})
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class UserServiceTest {
+public class UserServiceImplTest {
     @Mock
     private final UserRepository userRepository;
     @InjectMocks
@@ -51,14 +51,15 @@ public class UserServiceTest {
     @BeforeEach
     public void setup() {
 
-        userDto = new UserDto(1L, "name", "user@yandex");
-        userDto1 = new UserDto(2L, "name2", "user2@yandex");
+        userDto = new UserDto( "name", "user@yandex");
+        userDto1 = new UserDto("name2", "user2@yandex");
+        userDto = userService.addUser(userDto);
+        userDto1 = userService.addUser(userDto1);
+
     }
 
     @Test
     void saveUserTest() {
-
-        userService.addUser(userDto);
 
         TypedQuery<User> query = em.createQuery("Select u from User u where u.email = :email", User.class);
         User user = query.setParameter("email", userDto.getEmail()).getSingleResult();
@@ -71,12 +72,12 @@ public class UserServiceTest {
 
     @Test
     void getUserByIdTest() {
-        userService.addUser(userDto);
+
 
         lenient().when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.ofNullable(mapper.map(userDto, User.class)));
 
-        User user = mapper.map(userService.getUserById(1L), User.class);
+        User user = mapper.map(userService.getUserById(userDto.getId()), User.class);
 
         assertEquals(user.getId(), userDto.getId());
         assertEquals(user.getName(), userDto.getName());
@@ -100,8 +101,6 @@ public class UserServiceTest {
 
     @Test
     void getAllUsersTest() {
-        userService.addUser(userDto);
-        userService.addUser(userDto1);
         TypedQuery<User> query = em.createQuery(
                 "SELECT user " +
                         "FROM User user",
@@ -114,7 +113,7 @@ public class UserServiceTest {
     @Test
     void updateUserName() {
         userDto.setName("newName");
-        userService.addUser(userDto);
+        userService.updateUserById(userDto.getId(),userDto);
         TypedQuery<User> query = em.createQuery("SELECT u from User u where u.id = :id", User.class);
         User user = query.setParameter("id", userDto.getId()).getSingleResult();
 
@@ -127,7 +126,7 @@ public class UserServiceTest {
     @Test
     void updateUserEmailTest() {
         userDto.setEmail("newEmailUserDto@mail.ru");
-        userService.addUser(userDto);
+        userDto = userService.updateUserById(userDto.getId(),userDto);
 
         TypedQuery<User> query = em.createQuery("Select u from User u where u.id = :id", User.class);
         User user = query.setParameter("id", userDto.getId()).getSingleResult();

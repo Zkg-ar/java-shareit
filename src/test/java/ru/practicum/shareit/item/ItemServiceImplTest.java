@@ -20,6 +20,7 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.mapper.ModelMapperUtil;
@@ -50,6 +51,8 @@ import static org.mockito.Mockito.*;
 public class ItemServiceImplTest {
     @Mock
     private final ItemRepository itemRepository;
+    @Mock
+    private final CommentRepository commentRepository;
 
     @InjectMocks
     private final ItemService itemService;
@@ -69,29 +72,26 @@ public class ItemServiceImplTest {
 
     @BeforeEach
     public void setup() {
-        userDto = new UserDto(1L, "name", "email@ya.ru");
-        userDto2 = new UserDto(2L, "name", "email1@ya.ru");
-        itemDto = new ItemDto(1L, "name", "description", true);
-        bookingDto = new BookingDto(1L,
-                1L,
+        userDto = userService.addUser(new UserDto("name", "email@ya.ru"));
+        userDto = userService.addUser(userDto);
+        userDto2 = userService.addUser(new UserDto("name", "email1@ya.ru"));
+        userDto2 = userService.addUser(userDto2);
+        itemDto = itemService.addItem(new ItemDto("name", "description", false), userDto.getId());
+        itemDto = itemService.addItem(itemDto, userDto.getId());
+        bookingDto = new BookingDto(
+                itemDto.getId(),
                 userDto2,
                 itemDto,
                 LocalDateTime.of(2020, 12, 5, 1, 1),
                 LocalDateTime.of(2021, 12, 7, 1, 1),
                 Status.APPROVED);
-        commentDto = new CommentDto(1L, "Cool", "Zaven", LocalDateTime.of(2023, 4, 29, 12, 0));
+        commentDto = new CommentDto("Cool", "Zaven", LocalDateTime.of(2023, 4, 29, 12, 0));
 
-        userService.addUser(userDto);
-        userService.addUser(userDto2);
-        itemService.addItem(itemDto, 1L);
-        bookingService.addBooking(2L, bookingDto);
+        bookingDto = bookingService.addBooking(userDto2.getId(), bookingDto);
     }
 
     @Test
     void saveItemTest() {
-
-        itemService.addItem(itemDto, 1L);
-
         TypedQuery<Item> query = em.createQuery("Select i from Item i where i.id = :id", Item.class);
         Item item = query.setParameter("id", itemDto.getId()).getSingleResult();
 
@@ -108,7 +108,7 @@ public class ItemServiceImplTest {
         lenient().when(itemRepository.findById(anyLong()))
                 .thenReturn(Optional.ofNullable(mapper.map(itemDto, Item.class)));
 
-        Item item = mapper.map(itemService.getItemById(1L, 1L), Item.class);
+        Item item = mapper.map(itemService.getItemById(userDto.getId(), itemDto.getId()), Item.class);
 
         assertEquals(item.getId(), itemDto.getId());
         assertEquals(item.getName(), itemDto.getName());
@@ -134,7 +134,6 @@ public class ItemServiceImplTest {
 
     @Test
     void getItemByIdWhenItemNotFoundTest() {
-        Long userId = 1L;
         Long itemId = 100L;
         lenient().when(itemRepository.findById(itemId))
                 .thenThrow(new NotFoundException(String.format("Вещь с id = %d не найдена", itemId)));
@@ -142,7 +141,7 @@ public class ItemServiceImplTest {
 
         final NotFoundException exception = Assertions.assertThrows(
                 NotFoundException.class,
-                () -> itemService.getItemById(userId, itemId));
+                () -> itemService.getItemById(userDto.getId(), itemId));
 
         Assertions.assertEquals(String.format("Вещь с id = %d не найдена", itemId), exception.getMessage());
     }
@@ -160,10 +159,11 @@ public class ItemServiceImplTest {
 
     }
 
+
     @Test
     void updateItemName() {
         itemDto.setName("newItem");
-        itemService.updateItem(itemDto, 1L, 1L);
+        itemService.updateItem(itemDto, userDto.getId(), itemDto.getId());
 
         TypedQuery<Item> query = em.createQuery("SELECT i from Item i where i.id = :id", Item.class);
         Item item = query.setParameter("id", itemDto.getId()).getSingleResult();
@@ -174,25 +174,34 @@ public class ItemServiceImplTest {
     }
 
     @Test
-    void addCommentTest() {
+    void addCommentWhenUserNotFound() {
+        Long userId = 100L;
+        lenient().when(commentRepository.save(any()))
+                .thenThrow(new NotFoundException(String.format("Пользователь с id = %d не найден", userId)));
 
-        itemService.addComment(2L, 1L, commentDto);
+        final NotFoundException exception = Assertions.assertThrows(
+                NotFoundException.class,
+                () -> itemService.addComment(userId, itemDto.getId(), commentDto));
 
-        TypedQuery<Comment> query = em.createQuery("Select c from Comment c where c.id = :id", Comment.class);
-        Comment comment = query.setParameter("id", commentDto.getId()).getSingleResult();
-
-        assertThat(comment.getId(), notNullValue());
-        assertThat(comment.getAuthor().getName(), equalTo(commentDto.getAuthorName()));
-        assertThat(comment.getText(), equalTo(commentDto.getText()));
-        assertThat(comment.getId(), equalTo(commentDto.getId()));
-        assertThat(comment.getCreated(), equalTo(commentDto.getCreated()));
-
+        Assertions.assertEquals(String.format("Пользователь с id = %d не найден", userId), exception.getMessage());
     }
 
     @Test
+    void addCommentWhenItemNotFound() {
+        Long itemId = 100L;
+        lenient().when(commentRepository.save(any()))
+                .thenThrow(new NotFoundException(String.format("Вещь с id = %d не найден", itemId)));
+
+        final NotFoundException exception = Assertions.assertThrows(
+                NotFoundException.class,
+                () -> itemService.addComment(userDto.getId(), itemId, commentDto));
+
+        Assertions.assertEquals(String.format("Вещь с id = %d не найден", itemId), exception.getMessage());
+    }
+
+
+    @Test
     void searchTest() {
-
-
         lenient().when(itemRepository.findItemByText(anyString(), any())).
                 thenReturn(List.of(itemDto).stream()
                         .map(itemDto1 -> mapper.map(itemDto1, Item.class))

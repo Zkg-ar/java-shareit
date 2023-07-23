@@ -21,6 +21,12 @@ public class ItemDto {
     private Boolean available;
     private Long requestId;
 
+    public ItemDto(String name, String description, Boolean available) {
+        this.name = name;
+        this.description = description;
+        this.available = available;
+    }
+
     public ItemDto(Long id, String name, String description, Boolean available) {
         this.id = id;
         this.name = name;
