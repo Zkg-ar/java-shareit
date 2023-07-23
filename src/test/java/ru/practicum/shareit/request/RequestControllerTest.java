@@ -113,7 +113,7 @@ public class RequestControllerTest {
 
     @Test
     public void getAllWithPaginationTest() throws Exception {
-        when(itemRequestService.getAllWithPagination(anyLong(),any()))
+        when(itemRequestService.getAllWithPagination(anyLong(), any()))
                 .thenReturn(List.of(itemRequestDto));
 
         mvc.perform(get("/requests/all")

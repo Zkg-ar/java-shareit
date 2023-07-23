@@ -28,19 +28,19 @@ public interface BookingsRepository extends JpaRepository<Booking, Long> {
     List<Booking> findAllByBookerAndStatusEqualsOrderByStartDesc(User user, Status status, Pageable page);
 
     //Метод возвращает владельцу список бронирований.
-    List<Booking> findAllByItem_OwnerOrderByStartDesc(User owner,Pageable page);
+    List<Booking> findAllByItem_OwnerOrderByStartDesc(User owner, Pageable page);
 
     //Метод возвращает владельцу список всех прошедших бронирований.
-    List<Booking> findAllByItem_OwnerAndEndBeforeOrderByStartDesc(User owner, LocalDateTime now,Pageable page);
+    List<Booking> findAllByItem_OwnerAndEndBeforeOrderByStartDesc(User owner, LocalDateTime now, Pageable page);
 
     //Метод владельцу возвращает список всех будуших бронировани
-    List<Booking> findAllByItem_OwnerAndStartIsAfterOrderByStartDesc(User owner, LocalDateTime now,Pageable page);
+    List<Booking> findAllByItem_OwnerAndStartIsAfterOrderByStartDesc(User owner, LocalDateTime now, Pageable page);
 
     //Метод владельцу возвращает список всех текущих бронирований
-    List<Booking> findAllByItem_OwnerAndStartIsBeforeAndEndIsAfterOrderByStartDesc(User owner, LocalDateTime start, LocalDateTime end,Pageable page);
+    List<Booking> findAllByItem_OwnerAndStartIsBeforeAndEndIsAfterOrderByStartDesc(User owner, LocalDateTime start, LocalDateTime end, Pageable page);
 
     //Метод возвращает владельцу список бронирования по заданному статусу
-    List<Booking> findAllByItem_OwnerEqualsAndStatusEqualsOrderByStartDesc(User owner, Status status,Pageable page);
+    List<Booking> findAllByItem_OwnerEqualsAndStatusEqualsOrderByStartDesc(User owner, Status status, Pageable page);
 
     List<Booking> findBookingByItemIdAndStartBeforeOrderByEndDesc(Long itemId, LocalDateTime time);
 

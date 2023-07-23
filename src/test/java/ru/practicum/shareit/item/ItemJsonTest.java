@@ -17,7 +17,7 @@ public class ItemJsonTest {
 
     @Test
     void testItemDto() throws Exception {
-        ItemDto itemDto = new ItemDto(1L,"item", "description", true,1L);
+        ItemDto itemDto = new ItemDto(1L, "item", "description", true, 1L);
 
         JsonContent<ItemDto> result = json.write(itemDto);
 

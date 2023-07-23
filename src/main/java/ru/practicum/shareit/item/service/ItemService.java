@@ -17,7 +17,7 @@ public interface ItemService {
 
     List<ItemDtoWithBookings> getAllItems(Long userId, Pageable page);
 
-    List<ItemDto> search(String text,Pageable page);
+    List<ItemDto> search(String text, Pageable page);
 
     CommentDto addComment(Long userId, Long itemId, CommentDto responseCommentDto);
 }

@@ -1,7 +1,6 @@
 
 package ru.practicum.shareit.item.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
