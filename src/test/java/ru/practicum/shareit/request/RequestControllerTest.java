@@ -3,6 +3,7 @@ package ru.practicum.shareit.request;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -60,6 +61,7 @@ public class RequestControllerTest {
     }
 
     @Test
+    @DisplayName("Создан запрос на аренду вещи")
     public void addItemRequestTest() throws Exception {
         when(itemRequestService.addItemRequest(anyLong(), any()))
                 .thenReturn(itemRequestDto);
@@ -76,6 +78,7 @@ public class RequestControllerTest {
     }
 
     @Test
+    @DisplayName("Получение запроса на вещь по id")
     public void getByIdTest() throws Exception {
         when(itemRequestService.getById(any(), any()))
                 .thenReturn(itemRequestDto);
@@ -94,6 +97,7 @@ public class RequestControllerTest {
     }
 
     @Test
+    @DisplayName("Получение списка запросов")
     public void getAllTest() throws Exception {
         when(itemRequestService.getAll(anyLong()))
                 .thenReturn(List.of(itemRequestDto));
@@ -112,6 +116,7 @@ public class RequestControllerTest {
     }
 
     @Test
+    @DisplayName("Получение списка запросов постранично")
     public void getAllWithPaginationTest() throws Exception {
         when(itemRequestService.getAllWithPagination(anyLong(), any()))
                 .thenReturn(List.of(itemRequestDto));

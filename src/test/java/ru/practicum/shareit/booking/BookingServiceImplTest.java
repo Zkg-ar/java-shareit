@@ -1,10 +1,7 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -101,7 +98,7 @@ public class BookingServiceImplTest {
                 LocalDateTime.of(2020, 12, 5, 1, 1),
                 LocalDateTime.of(2025, 12, 7, 1, 1),
                 Status.WAITING);
-        bookingDto = bookingService.addBooking(userDto2.getId(),bookingDto);
+        bookingDto = bookingService.addBooking(userDto2.getId(), bookingDto);
         responseBookingDto = ResponseBookingDto
                 .builder()
                 .id(1L)
@@ -113,6 +110,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    @DisplayName("Добавление нового бронирования")
     void saveBookingTest() {
 
         bookingService.addBooking(userDto2.getId(), bookingDto);
@@ -129,6 +127,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    @DisplayName("Попытка добавить бронирования владельцем")
     void saveBookingWhenExceptionByOwnerBookTest() {
         lenient().when(bookingsRepository.save(any()))
                 .thenThrow(new NotFoundException("Владелец вещи не может ее бронировать"));
@@ -141,6 +140,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    @DisplayName("Создание бронирования на вещь, которой нет в БД")
     void saveBookingWhenItemNotFoundTest() {
         bookingDto.setItemId(100L);
         lenient().when(bookingsRepository.save(any()))
@@ -154,6 +154,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    @DisplayName("Создание бронирования пользовтелем, которого нет в БД")
     void saveBookingWhenUserNotFoundTest() {
         Long userId = 100L;
         lenient().when(bookingsRepository.save(any()))
@@ -168,6 +169,7 @@ public class BookingServiceImplTest {
 
 
     @Test
+    @DisplayName("Получение бронирования по id")
     void getBookingByIdTest() {
         bookingService.addBooking(userDto2.getId(), bookingDto);
         lenient().when(bookingsRepository.findById(anyLong()))
@@ -179,6 +181,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    @DisplayName("Получение бронирования по id.Ожидаем исключение,о не найденном бронировании.")
     void getBookingByIdWhenBookingNotFoundTest() {
         Long bookingId = 100L;
         lenient().when(bookingsRepository.save(any()))
@@ -186,13 +189,14 @@ public class BookingServiceImplTest {
 
         final NotFoundException exception = Assertions.assertThrows(
                 NotFoundException.class,
-                () -> bookingService.getById(userDto.getId(),bookingId ));
+                () -> bookingService.getById(userDto.getId(), bookingId));
 
         assertEquals(String.format("Бронирование с id = %d не найдено", bookingId), exception.getMessage());
 
     }
 
     @Test
+    @DisplayName("Получение бронирования по id. Должно быть выброшено исключение о том, что пользователь не найден.")
     void getBookingByIdWhenUserNotFoundTest() {
         Long userId = 100L;
         bookingService.addBooking(userDto2.getId(), bookingDto);
@@ -207,8 +211,9 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    @DisplayName("Получение бронирования по id. Должно быть выброшено исключение о том, что доступ ограничен")
     void getBookingByIdWhenAccessExceptionTest() {
-        UserDto userDto3 = userService.addUser( new UserDto("name", "3email@email"));
+        UserDto userDto3 = userService.addUser(new UserDto("name", "3email@email"));
 
         bookingService.addBooking(userDto2.getId(), bookingDto);
         lenient().when(bookingsRepository.save(any()))
@@ -222,6 +227,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    @DisplayName("Получение всех бронирований заданного пользователя")
     void getAllBookingsOfCurrentUserTest() {
         bookingService.addBooking(userDto2.getId(), bookingDto);
         lenient().when(bookingsRepository.findAllByBookerOrderByStartDesc(mapper.map(userDto2, User.class), page))
@@ -235,6 +241,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    @DisplayName("Получение всех прошлых бронирований заданного пользователя")
     void getAllBookingsOfCurrentUserPastTest() {
         bookingDto.setEnd(past);
         bookingService.addBooking(userDto2.getId(), bookingDto);
@@ -249,6 +256,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    @DisplayName("Получение всех будущих бронирований заданного пользователя")
     void getAllBookingsOfCurrentUserFutureTest() {
         bookingDto.setStart(future);
         bookingDto.setEnd(future.plusMonths(1));
@@ -264,6 +272,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    @DisplayName("Получение всех текущих бронирований заданного пользователя")
     void getAllBookingsOfCurrentUserCurrentTest() {
         bookingService.addBooking(userDto2.getId(), bookingDto);
         lenient().when(bookingsRepository.findAllByBookerAndStartIsBeforeAndEndIsAfterOrderByStartDesc(mapper.map(userDto2, User.class), now, now, page))
@@ -276,6 +285,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    @DisplayName("Получение всех бронирований заданного пользователя со статусом WAITING")
     void getAllBookingsOfCurrentUserStatusWaitingTest() {
         bookingService.addBooking(userDto2.getId(), bookingDto);
         lenient().when(bookingsRepository.findAllByBookerAndStatusEqualsOrderByStartDesc(mapper.map(userDto2, User.class), Status.WAITING, page))
@@ -289,6 +299,7 @@ public class BookingServiceImplTest {
 
 
     @Test
+    @DisplayName("Получение всех бронирований владельцем")
     void getAllBookingsOfOwnerTest() {
         bookingService.addBooking(userDto2.getId(), bookingDto);
         lenient().when(bookingsRepository.findAllByItem_OwnerOrderByStartDesc(mapper.map(userDto, User.class), page))
@@ -302,6 +313,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    @DisplayName("Получение всех прошедших бронирований владельцем")
     void getAllBookingsOfOwnerPastTest() {
         bookingDto.setEnd(past);
         bookingService.addBooking(userDto2.getId(), bookingDto);
@@ -316,6 +328,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    @DisplayName("Получение всех будущих бронирований владельцем")
     void getAllBookingsOfOwnerFutureTest() {
         bookingDto.setStart(future);
         bookingDto.setEnd(future.plusMonths(1));
@@ -331,6 +344,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    @DisplayName("Получение всех текущих бронирований владельцем")
     void getAllBookingsOfOwnerCurrentTest() {
         bookingService.addBooking(userDto2.getId(), bookingDto);
         lenient().when(bookingsRepository.findAllByItem_OwnerAndStartIsBeforeAndEndIsAfterOrderByStartDesc(mapper.map(userDto, User.class), now, now, page))
@@ -343,6 +357,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    @DisplayName("Получение всех бронирований владельцем со статусом WAITING")
     void getAllBookingsOfOwnerStatusWaitingTest() {
         bookingService.addBooking(userDto2.getId(), bookingDto);
         lenient().when(bookingsRepository.findAllByItem_OwnerEqualsAndStatusEqualsOrderByStartDesc(mapper.map(userDto, User.class), Status.WAITING, page))
@@ -355,6 +370,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    @DisplayName("Получение всех бронирований владельцем со статусом REJECTED")
     void getAllBookingsOfOwnerStatusRejectTest() {
         bookingDto.setStatus(Status.REJECTED);
         bookingService.addBooking(userDto2.getId(), bookingDto);
@@ -369,6 +385,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    @DisplayName("Подтверждение бронирования")
     void approveOrRejectWhenTrueTest() {
 
         bookingService.addBooking(userDto2.getId(), bookingDto);
@@ -381,6 +398,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    @DisplayName("Отказ в бронировании")
     void approveOrRejectWhenFalseTest() {
 
         bookingService.addBooking(userDto2.getId(), bookingDto);
@@ -392,6 +410,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    @DisplayName("Проброшено исключение о том, что пользователь не найден при подтверждении бронирования")
     void approveOrRejectWhenUserNotFoundTest() {
         Long userId = 100L;
         bookingService.addBooking(userDto2.getId(), bookingDto);
@@ -405,10 +424,11 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    @DisplayName("Подтверждение не существующего бронирования.Проброшено исключение.")
     void approveOrRejectWhenBookingNotFoundTest() {
         Long bookingId = 100L;
         lenient().when(bookingsRepository.save(mapper.map(bookingDto, Booking.class)))
-                .thenThrow(new NotFoundException(String.format("Бронирование с id = %d не найдено",bookingId)));
+                .thenThrow(new NotFoundException(String.format("Бронирование с id = %d не найдено", bookingId)));
 
         final NotFoundException exception = Assertions.assertThrows(
                 NotFoundException.class,
@@ -417,6 +437,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    @DisplayName("Подтвержение бронирования.Проброшено исключение.")
     void approveOrRejectWhenItemAccessExceptionTest() {
         bookingService.addBooking(userDto2.getId(), bookingDto);
         lenient().when(bookingsRepository.save(mapper.map(bookingDto, Booking.class)))
@@ -429,8 +450,8 @@ public class BookingServiceImplTest {
     }
 
     @Test
+    @DisplayName("Подтвреждение бронирования.Проброшено исключение, статус уже изменен.")
     void approveOrRejectWhenStatusAlreadyChangedTest() {
-
         bookingService.addBooking(userDto2.getId(), bookingDto);
         bookingService.approveOrRejectBooking(userDto.getId(), bookingDto.getId(), true);
         lenient().when(bookingsRepository.save(mapper.map(bookingDto, Booking.class)))

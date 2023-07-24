@@ -22,7 +22,7 @@ import ru.practicum.shareit.mapper.ModelMapperUtil;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -76,6 +76,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ItemDto> search(String text, Pageable page) {
         return itemRepository.findItemByText(text, page)
                 .stream()
@@ -85,6 +86,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ItemDtoWithBookings getItemById(Long userId, Long itemId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d не найден!", userId)));
@@ -110,6 +112,7 @@ public class ItemServiceImpl implements ItemService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public List<ItemDtoWithBookings> getAllItems(Long userId, Pageable page) {
         User owner = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d не найден", userId)));
@@ -171,6 +174,7 @@ public class ItemServiceImpl implements ItemService {
 
         return commentMapper.toCommentDto(comment);
     }
+
 
     private List<CommentDto> getAllComments(Long itemId) {
         return commentRepository

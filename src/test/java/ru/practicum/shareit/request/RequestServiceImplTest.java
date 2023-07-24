@@ -3,6 +3,7 @@ package ru.practicum.shareit.request;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -72,6 +73,7 @@ public class RequestServiceImplTest {
     }
 
     @Test
+    @DisplayName("Создание нового запроса на аренду вещи")
     public void saveRequestTest() {
         TypedQuery<ItemRequest> query = em.createQuery("Select i from ItemRequest i where i.id = :id", ItemRequest.class);
         ItemRequest itemRequest = query.setParameter("id", responseItemRequestDto.getId()).getSingleResult();
@@ -83,6 +85,7 @@ public class RequestServiceImplTest {
     }
 
     @Test
+    @DisplayName("Получение всех запросов пользователя.Выброшено исключение:пользователь не найден")
     public void getAllWhenUserNotFoundTest() {
         Long userId = 10L;
         lenient().when(itemRequestRepository.findAllByRequester_IdOrderByCreatedDesc(userId))
@@ -96,6 +99,7 @@ public class RequestServiceImplTest {
     }
 
     @Test
+    @DisplayName("Получение всех запросов пользователя.")
     public void getAllTest() {
 
         lenient().when(itemRequestRepository.findAllByRequester_IdOrderByCreatedDesc(userDto.getId()))
@@ -110,6 +114,7 @@ public class RequestServiceImplTest {
     }
 
     @Test
+    @DisplayName("Получение всех запросов пользователя постранично.Выброшено исключение:пользователь не найден")
     public void getAllWithPaginationWhenUserNotFoundTest() {
         Long userId = 10L;
         lenient().when(itemRequestRepository.findAllByRequester_IdOrderByCreatedDesc(userId))
@@ -123,6 +128,7 @@ public class RequestServiceImplTest {
     }
 
     @Test
+    @DisplayName("Получение всех запросов пользователя постранично.")
     public void getAllWithPaginationTest() {
 
         lenient().when(itemRequestRepository.findAllByRequester_IdOrderByCreatedDesc(userDto.getId()))

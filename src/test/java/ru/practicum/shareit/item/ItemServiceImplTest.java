@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -90,6 +91,7 @@ public class ItemServiceImplTest {
     }
 
     @Test
+    @DisplayName("Сохранение новой вещи")
     void saveItemTest() {
         TypedQuery<Item> query = em.createQuery("Select i from Item i where i.id = :id", Item.class);
         Item item = query.setParameter("id", itemDto.getId()).getSingleResult();
@@ -103,6 +105,7 @@ public class ItemServiceImplTest {
     }
 
     @Test
+    @DisplayName("Получение вещи по id")
     void getItemById() {
         lenient().when(itemRepository.findById(anyLong()))
                 .thenReturn(Optional.ofNullable(mapper.map(itemDto, Item.class)));
@@ -117,6 +120,7 @@ public class ItemServiceImplTest {
 
 
     @Test
+    @DisplayName("Получение вещи по id.Выброшено исключение:пользователь не найден")
     void getItemByIdWhenUserNotFoundTest() {
         Long userId = 100L;
         Long itemId = 1L;
@@ -132,6 +136,7 @@ public class ItemServiceImplTest {
     }
 
     @Test
+    @DisplayName("Получение вещи по id.Выброшено исключение:вещь не найдена")
     void getItemByIdWhenItemNotFoundTest() {
         Long itemId = 100L;
         lenient().when(itemRepository.findById(itemId))
@@ -146,6 +151,7 @@ public class ItemServiceImplTest {
     }
 
     @Test
+    @DisplayName("Получение всех вещей")
     void getAllItemsTest() {
 
         TypedQuery<Item> query = em.createQuery(
@@ -160,6 +166,7 @@ public class ItemServiceImplTest {
 
 
     @Test
+    @DisplayName("Обновление вещи по ее id")
     void updateItemName() {
         itemDto.setName("newItem");
         itemService.updateItem(itemDto, userDto.getId(), itemDto.getId());
@@ -173,6 +180,7 @@ public class ItemServiceImplTest {
     }
 
     @Test
+    @DisplayName("Добавление комментария к вещи.Выброшено исключение:пользователь не найден")
     void addCommentWhenUserNotFound() {
         Long userId = 100L;
         lenient().when(commentRepository.save(any()))
@@ -186,6 +194,7 @@ public class ItemServiceImplTest {
     }
 
     @Test
+    @DisplayName("Добавление комментария к вещи.Выброшено исключение:вещь не найден")
     void addCommentWhenItemNotFound() {
         Long itemId = 100L;
         lenient().when(commentRepository.save(any()))
@@ -200,6 +209,7 @@ public class ItemServiceImplTest {
 
 
     @Test
+    @DisplayName("Поиск вещей по ключевым словам")
     void searchTest() {
         lenient().when(itemRepository.findItemByText(anyString(), any())).
                 thenReturn(List.of(itemDto).stream()

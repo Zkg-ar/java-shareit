@@ -4,6 +4,7 @@ package ru.practicum.shareit.booking;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -69,6 +70,7 @@ public class BookingControllerTest {
     }
 
     @Test
+    @DisplayName("POST-запрос на добавление бронирования")
     void saveBookingTest() throws Exception {
         when(bookingService.addBooking(anyLong(), any()))
                 .thenReturn(bookingDto);
@@ -84,6 +86,7 @@ public class BookingControllerTest {
     }
 
     @Test
+    @DisplayName("GET-запрос на получения бронирования по id")
     void getBookingByIdTest() throws Exception {
         when(bookingService.getById(anyLong(), any())).
                 thenReturn(bookingDto);
@@ -97,6 +100,7 @@ public class BookingControllerTest {
     }
 
     @Test
+    @DisplayName("Запрос на получение всех бронирований владельца вещей")
     void getBookingsOfOwnerWithStateAllTest() throws Exception {
         when(bookingService.getByOwner(anyLong(), any(), any()))
                 .thenReturn(List.of(bookingDto));
@@ -120,6 +124,7 @@ public class BookingControllerTest {
     }
 
     @Test
+    @DisplayName("Запрос на получение бронирований со статусом REJECTED пользователем")
     void getBookingsOfCurrentUserWithStateRejectTest() throws Exception {
         bookingDto.setStatus(Status.REJECTED);
         when(bookingService.getAllBookingsOfCurrentUser(anyLong(), any(), any()))
@@ -144,6 +149,7 @@ public class BookingControllerTest {
     }
 
     @Test
+    @DisplayName("Запрос на получение будущих бронирований пользователем")
     void getBookingsOfCurrentUserWithStateFutureTest() throws Exception {
         bookingDto.setStart(LocalDateTime.of(2024, 12, 24, 12, 0));
         when(bookingService.getAllBookingsOfCurrentUser(anyLong(), any(), any()))
@@ -168,6 +174,7 @@ public class BookingControllerTest {
     }
 
     @Test
+    @DisplayName("Запрос на получение прошедших бронирований пользователем")
     void getBookingsOfCurrentUserWithStatePastTest() throws Exception {
         bookingDto.setStart(LocalDateTime.of(2019, 12, 24, 12, 0));
         when(bookingService.getAllBookingsOfCurrentUser(anyLong(), any(), any()))
@@ -192,6 +199,7 @@ public class BookingControllerTest {
     }
 
     @Test
+    @DisplayName("Запрос на получение всех бронирований пользователем")
     void getBookingsOfCurrentUserWithStateAllTest() throws Exception {
         when(bookingService.getAllBookingsOfCurrentUser(anyLong(), any(), any()))
                 .thenReturn(List.of(bookingDto));

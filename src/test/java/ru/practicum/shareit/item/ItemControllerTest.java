@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -73,6 +74,7 @@ public class ItemControllerTest {
     }
 
     @Test
+    @DisplayName("POST-запрос на добавление вещи")
     void saveItemTest() throws Exception {
         when(itemService.addItem(any(), anyLong()))
                 .thenReturn(itemDto);
@@ -92,6 +94,7 @@ public class ItemControllerTest {
     }
 
     @Test
+    @DisplayName("GET-запрос получения вещи по id")
     void getItemByIdTest() throws Exception {
         when(itemService.getItemById(anyLong(), anyLong()))
                 .thenReturn(itemDtoWithBookings);
@@ -111,6 +114,7 @@ public class ItemControllerTest {
     }
 
     @Test
+    @DisplayName("GET-запрос на получение всех вещей")
     void getAllItemsTest() throws Exception {
         when(itemService.getAllItems(anyLong(), any()))
                 .thenReturn(List.of(itemDtoWithBookings));
@@ -129,6 +133,7 @@ public class ItemControllerTest {
     }
 
     @Test
+    @DisplayName("PATCH-запрос на частичное обновление вещи по id")
     void updateItemTest() throws Exception {
         when(itemService.updateItem(any(), any(), any()))
                 .thenReturn(itemDto);
@@ -147,6 +152,7 @@ public class ItemControllerTest {
     }
 
     @Test
+    @DisplayName("Поиск нужной вещи по ключевым словам")
     void searchBySubstringTest() throws Exception {
         when(itemService.search(anyString(), any()))
                 .thenReturn(List.of(itemDto));
@@ -166,6 +172,7 @@ public class ItemControllerTest {
     }
 
     @Test
+    @DisplayName("Добавление комментариев к вещи по ее id")
     void addCommentTest() throws Exception {
         when(itemService.addComment(anyLong(), any(), any()))
                 .thenReturn(commentDto);

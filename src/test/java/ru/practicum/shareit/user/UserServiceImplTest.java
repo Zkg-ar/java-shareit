@@ -3,6 +3,7 @@ package ru.practicum.shareit.user;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -59,6 +60,7 @@ public class UserServiceImplTest {
     }
 
     @Test
+    @DisplayName("Создание нового пользователя")
     void saveUserTest() {
 
         TypedQuery<User> query = em.createQuery("Select u from User u where u.email = :email", User.class);
@@ -71,6 +73,7 @@ public class UserServiceImplTest {
 
 
     @Test
+    @DisplayName("Получение пользователя по id")
     void getUserByIdTest() {
 
 
@@ -87,6 +90,7 @@ public class UserServiceImplTest {
     }
 
     @Test
+    @DisplayName("Получение пользователя по id.Выброшено исключение:пользователь не найден")
     void getUserByIdTestWhenNotFound() {
         Long id = 100L;
         lenient().when(userRepository.findById(id))
@@ -100,6 +104,7 @@ public class UserServiceImplTest {
     }
 
     @Test
+    @DisplayName("Получение всех пользователей")
     void getAllUsersTest() {
         TypedQuery<User> query = em.createQuery(
                 "SELECT user " +
@@ -111,6 +116,7 @@ public class UserServiceImplTest {
     }
 
     @Test
+    @DisplayName("Обновление имени пользователя")
     void updateUserName() {
         userDto.setName("newName");
         userService.updateUserById(userDto.getId(),userDto);
@@ -124,6 +130,7 @@ public class UserServiceImplTest {
     }
 
     @Test
+    @DisplayName("Обновление email пользователя")
     void updateUserEmailTest() {
         userDto.setEmail("newEmailUserDto@mail.ru");
         userDto = userService.updateUserById(userDto.getId(),userDto);

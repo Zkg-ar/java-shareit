@@ -3,6 +3,7 @@ package ru.practicum.shareit.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -55,6 +56,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @DisplayName("POST-запрос на создание нового пользователя")
     void saveUserTest() throws Exception {
         when(userService.addUser(any()))
                 .thenReturn(userDto);
@@ -71,6 +73,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @DisplayName("POST-запрос создание нового пользователя.Выброшено исключение:ошибка валидации")
     void saveWhenValidationExceptionTest() throws Exception {
         mvc.perform(post("/users")
                         .content(mapper.writeValueAsString(userDto2))
@@ -82,6 +85,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @DisplayName("GET-запрос на получение пользователя по id")
     void getByIdTest() throws Exception {
         when(userService.getUserById(anyLong()))
                 .thenReturn(userDto);
@@ -99,6 +103,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @DisplayName("GET-запрос на получение всех пользователей")
     void getUsersTest() throws Exception {
         when(userService.getAllUsers())
                 .thenReturn(List.of(userDto, userDto3));
@@ -117,6 +122,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @DisplayName("GET-запрос на получение списка пользователей.Список пуст.")
     void getUsersWhenEmptyTest() throws Exception {
 
         when(userService.getAllUsers())
@@ -132,6 +138,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @DisplayName("DELETE-запрос по id")
     void deleteTest() throws Exception {
         mvc.perform(delete("/users/1"))
                 .andExpect(status().isOk());
@@ -140,6 +147,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @DisplayName("PATCH-запрос")
     void updateUserTest() throws Exception {
         when(userService.updateUserById(1L, userDto))
                 .thenReturn(userDto);
