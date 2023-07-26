@@ -8,8 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.mapper.ItemMapper;
 import ru.practicum.shareit.mapper.ItemRequestMapper;
-import ru.practicum.shareit.mapper.ModelMapperUtil;
+import ru.practicum.shareit.mapper.UserMapper;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ResponseItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
@@ -18,6 +19,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,19 +30,19 @@ import java.util.stream.Collectors;
 public class ItemRequestServiceImpl implements ItemRequestService {
 
     private final UserService userService;
-    private final ModelMapperUtil mapper;
+
     private final ItemRequestRepository itemRequestRepository;
     private final ItemRepository itemRepository;
-    private final ItemRequestMapper itemRequestMapper;
+
 
     @Override
     public ResponseItemRequestDto addItemRequest(Long userId, ItemRequestDto itemRequestDto) {
-        User user = mapper.map(userService.getUserById(userId), User.class);
-        ItemRequest itemRequest = mapper.map(itemRequestDto, ItemRequest.class);
+        User user = UserMapper.INSTANCE.toUser(userService.getUserById(userId));
+        ItemRequest itemRequest = ItemRequestMapper.INSTANCE.toItemRequest((itemRequestDto));
         itemRequest.setRequester(user);
         itemRequest.setCreated(LocalDateTime.now());
 
-        return itemRequestMapper.toResponseItemRequestDto(itemRequestRepository.save(itemRequest));
+        return ItemRequestMapper.INSTANCE.toResponseItemRequestDto(itemRequestRepository.save(itemRequest), new ArrayList<>());
     }
 
     @Override
@@ -50,13 +52,18 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
         List<ResponseItemRequestDto> requests = itemRequestRepository.findAllByRequester_IdOrderByCreatedDesc(userId)
                 .stream()
-                .map(itemRequest -> itemRequestMapper.toResponseItemRequestDto(itemRequest))
+                .map(
+                        itemRequest -> ItemRequestMapper.INSTANCE.toResponseItemRequestDto(itemRequest,
+                                itemRepository.findByRequestId(itemRequest.getId())
+                                        .stream()
+                                        .map(ItemMapper.INSTANCE::toItemDto)
+                                        .collect(Collectors.toList())))
                 .collect(Collectors.toList());
 
         List<ItemDto> items = itemRepository
                 .findAll()
                 .stream()
-                .map(item -> mapper.map(item, ItemDto.class)).collect(Collectors.toList());
+                .map(ItemMapper.INSTANCE::toItemDto).collect(Collectors.toList());
         for (ResponseItemRequestDto request : requests) {
             request.setItems(items
                     .stream()
@@ -74,12 +81,18 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
         Page<ResponseItemRequestDto> requests = itemRequestRepository
                 .findItemRequestByRequester_IdNot(userId, page)
-                .map(itemRequest -> itemRequestMapper.toResponseItemRequestDto(itemRequest));
+                .map(
+                        itemRequest -> ItemRequestMapper.INSTANCE.toResponseItemRequestDto(itemRequest,
+                                itemRepository.findByRequestId(itemRequest.getId())
+                                        .stream().map(ItemMapper.INSTANCE::toItemDto)
+                                        .collect(Collectors.toList()))
+                );
 
         List<ItemDto> items = itemRepository
                 .findAll()
                 .stream()
-                .map(item -> mapper.map(item, ItemDto.class)).collect(Collectors.toList());
+                .map(ItemMapper.INSTANCE::toItemDto)
+                .collect(Collectors.toList());
         for (ResponseItemRequestDto request : requests) {
             request.setItems(items
                     .stream()
@@ -97,11 +110,17 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         userService.getUserById(userId);
         ResponseItemRequestDto responseItemRequestDto = itemRequestRepository
                 .findById(requestId)
-                .map(itemRequest -> itemRequestMapper.toResponseItemRequestDto(itemRequest))
+                .map(
+                        itemRequest -> ItemRequestMapper.INSTANCE.toResponseItemRequestDto(itemRequest,
+                                itemRepository.findByRequestId(itemRequest.getId())
+                                        .stream()
+                                        .map(ItemMapper.INSTANCE::toItemDto)
+                                        .collect(Collectors.toList()))
+                )
                 .orElseThrow(() -> new NotFoundException(String.format("Запрос на вещь с id = %d не найдена", requestId)));
         responseItemRequestDto.setItems(itemRepository.findByRequestId(requestId)
                 .stream()
-                .map(item -> mapper.map(item, ItemDto.class))
+                .map(ItemMapper.INSTANCE::toItemDto)
                 .collect(Collectors.toList()));
         return responseItemRequestDto;
     }

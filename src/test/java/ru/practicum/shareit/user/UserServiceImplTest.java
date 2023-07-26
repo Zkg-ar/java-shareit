@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import ru.practicum.shareit.exceptions.NotFoundException;
-import ru.practicum.shareit.mapper.ModelMapperUtil;
+import ru.practicum.shareit.mapper.UserMapper;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -44,7 +44,6 @@ public class UserServiceImplTest {
     @InjectMocks
     private final UserService userService;
     private final EntityManager em;
-    private final ModelMapperUtil mapper;
 
     private UserDto userDto;
     private UserDto userDto1;
@@ -78,9 +77,9 @@ public class UserServiceImplTest {
 
 
         lenient().when(userRepository.findById(anyLong()))
-                .thenReturn(Optional.ofNullable(mapper.map(userDto, User.class)));
+                .thenReturn(Optional.ofNullable(UserMapper.INSTANCE.toUser(userDto)));
 
-        User user = mapper.map(userService.getUserById(userDto.getId()), User.class);
+        User user = UserMapper.INSTANCE.toUser(userService.getUserById(userDto.getId()));
 
         assertEquals(user.getId(), userDto.getId());
         assertEquals(user.getName(), userDto.getName());

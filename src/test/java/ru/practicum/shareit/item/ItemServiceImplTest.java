@@ -23,6 +23,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.mapper.ItemMapper;
 import ru.practicum.shareit.mapper.ModelMapperUtil;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
@@ -108,9 +109,9 @@ public class ItemServiceImplTest {
     @DisplayName("Получение вещи по id")
     void getItemById() {
         lenient().when(itemRepository.findById(anyLong()))
-                .thenReturn(Optional.ofNullable(mapper.map(itemDto, Item.class)));
+                .thenReturn(Optional.ofNullable(ItemMapper.INSTANCE.toItem(itemDto)));
 
-        Item item = mapper.map(itemService.getItemById(userDto.getId(), itemDto.getId()), Item.class);
+        Item item = ItemMapper.INSTANCE.toItem(itemService.getItemById(userDto.getId(), itemDto.getId()));
 
         assertEquals(item.getId(), itemDto.getId());
         assertEquals(item.getName(), itemDto.getName());
@@ -213,7 +214,7 @@ public class ItemServiceImplTest {
     void searchTest() {
         lenient().when(itemRepository.findItemByText(anyString(), any())).
                 thenReturn(List.of(itemDto).stream()
-                        .map(itemDto1 -> mapper.map(itemDto1, Item.class))
+                        .map(ItemMapper.INSTANCE::toItem)
                         .collect(Collectors.toList()));
 
         List<ItemDto> items = itemService.search("name", PageRequest.of(0, 2))

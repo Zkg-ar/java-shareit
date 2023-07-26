@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exceptions.AlreadyExistException;
 import ru.practicum.shareit.exceptions.NotFoundException;
-import ru.practicum.shareit.mapper.ModelMapperUtil;
+import ru.practicum.shareit.mapper.UserMapper;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -22,13 +22,12 @@ public class UserServiceImpl implements UserService {
 
 
     private final UserRepository userRepository;
-    private final ModelMapperUtil mapper;
 
     @Override
     public UserDto addUser(UserDto userDto) {
         try {
-            User user = mapper.map(userDto, User.class);
-            UserDto dto = mapper.map(userRepository.save(user), UserDto.class);
+            User user = UserMapper.INSTANCE.toUser(userDto);
+            UserDto dto = UserMapper.INSTANCE.toUserDto(userRepository.save(user));
             return dto;
         } catch (ConstraintViolationException exception) {
             throw new AlreadyExistException(String.format("Пользователь с email = %s уже существует", userDto.getEmail()));
@@ -40,14 +39,14 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getAllUsers() {
         return userRepository.findAll()
                 .stream()
-                .map(user -> mapper.map(user, UserDto.class))
+                .map(UserMapper.INSTANCE::toUserDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
     public UserDto getUserById(Long id) {
-        return mapper.map(userRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d не найден!", id))), UserDto.class);
+        return UserMapper.INSTANCE.toUserDto(userRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d не найден!", id))));
     }
 
     @Override
@@ -71,7 +70,7 @@ public class UserServiceImpl implements UserService {
             }
 
         }
-        return mapper.map(userRepository.save(user), UserDto.class);
+        return UserMapper.INSTANCE.toUserDto(userRepository.save(user));
     }
 
     @Override

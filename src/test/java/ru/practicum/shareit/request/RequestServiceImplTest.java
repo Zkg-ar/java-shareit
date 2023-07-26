@@ -16,7 +16,6 @@ import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.mapper.ItemRequestMapper;
-import ru.practicum.shareit.mapper.ModelMapperUtil;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ResponseItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
@@ -54,8 +53,8 @@ public class RequestServiceImplTest {
     private final UserService userService;
 
     private final EntityManager em;
-    private final ItemRequestMapper itemRequestMapper;
-    private final ModelMapperUtil mapper;
+
+
 
     private ResponseItemRequestDto responseItemRequestDto;
     private ItemRequestDto itemRequestDto;
@@ -103,7 +102,7 @@ public class RequestServiceImplTest {
     public void getAllTest() {
 
         lenient().when(itemRequestRepository.findAllByRequester_IdOrderByCreatedDesc(userDto.getId()))
-                .thenReturn(List.of(mapper.map(itemRequestDto, ItemRequest.class)));
+                .thenReturn(List.of(ItemRequestMapper.INSTANCE.toItemRequest(itemRequestDto)));
 
         List<ResponseItemRequestDto> requests = itemRequestService.getAll(userDto.getId());
 
@@ -132,7 +131,7 @@ public class RequestServiceImplTest {
     public void getAllWithPaginationTest() {
 
         lenient().when(itemRequestRepository.findAllByRequester_IdOrderByCreatedDesc(userDto.getId()))
-                .thenReturn(List.of(mapper.map(itemRequestDto, ItemRequest.class)));
+                .thenReturn(List.of(ItemRequestMapper.INSTANCE.toItemRequest(itemRequestDto)));
 
         List<ResponseItemRequestDto> requests = itemRequestService.getAll(userDto.getId());
 
