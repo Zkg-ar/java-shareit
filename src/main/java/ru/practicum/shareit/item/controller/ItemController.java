@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithBookings;
@@ -10,6 +11,7 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,19 +37,23 @@ public class ItemController {
 
 
     @GetMapping
-    public List<ItemDtoWithBookings> getAllItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ItemDtoWithBookings> getAllItems(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                                 @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer from,
+                                                 @RequestParam(value = "size", defaultValue = "20") @Min(1) Integer size) {
         log.info("Получен запрос на получения списка всех вещей");
-        return itemService.getAllItems(userId);
+        return itemService.getAllItems(userId, PageRequest.of(from, size));
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchBySubstring(@RequestParam String text) {
+    public List<ItemDto> searchBySubstring(@RequestParam String text,
+                                           @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer from,
+                                           @RequestParam(value = "size", defaultValue = "20") @Min(1) Integer size) {
         log.info("Запрошен товар в названии или описании которого есть слово {}", text);
         if (text.isEmpty()) {
             return Collections.emptyList();
         }
 
-        return itemService.search(text);
+        return itemService.search(text,PageRequest.of(from,size));
 
     }
 
