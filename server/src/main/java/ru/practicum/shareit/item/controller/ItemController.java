@@ -3,7 +3,6 @@ package ru.practicum.shareit.item.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithBookings;
@@ -41,7 +40,7 @@ public class ItemController {
                                                  @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer from,
                                                  @RequestParam(value = "size", defaultValue = "20") @Min(1) Integer size) {
         log.info("Получен запрос на получения списка всех вещей");
-        return itemService.getAllItems(userId, PageRequest.of(from, size));
+        return itemService.getAllItems(userId, from,size);
     }
 
     @GetMapping("/search")
@@ -53,7 +52,7 @@ public class ItemController {
             return Collections.emptyList();
         }
 
-        return itemService.search(text,PageRequest.of(from,size));
+        return itemService.search(text,from,size);
 
     }
 

@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -65,7 +66,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookingDto> getByOwner(Long userId, State state, Pageable page) {
+    public List<BookingDto> getByOwner(Long userId, State state, Integer from,Integer size) {
+        Pageable page = PageRequest.of(from/size,size);
         User owner = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d не найден ", userId)));
         LocalDateTime now = LocalDateTime.now();
@@ -110,7 +112,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookingDto> getAllBookingsOfCurrentUser(Long userId, State state, Pageable page) {
+    public List<BookingDto> getAllBookingsOfCurrentUser(Long userId, State state, Integer from,Integer size) {
+        Pageable page = PageRequest.of(from/size,size);
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d не найден ", userId)));
         LocalDateTime now = LocalDateTime.now();

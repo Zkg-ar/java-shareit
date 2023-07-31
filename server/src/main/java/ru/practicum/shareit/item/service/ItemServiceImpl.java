@@ -1,29 +1,31 @@
 
 package ru.practicum.shareit.item.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.ResponseBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingsRepository;
 import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithBookings;
-import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import lombok.RequiredArgsConstructor;
 import ru.practicum.shareit.mapper.BookingMapper;
 import ru.practicum.shareit.mapper.CommentMapper;
 import ru.practicum.shareit.mapper.ItemMapper;
 import ru.practicum.shareit.mapper.ModelMapperUtil;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
-import org.springframework.transaction.annotation.Transactional;
 import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -76,7 +78,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ItemDto> search(String text, Pageable page) {
+    public List<ItemDto> search(String text, Integer from, Integer size) {
+        Pageable page = PageRequest.of(from / size, size);
         return itemRepository.findItemByText(text, page)
                 .stream()
                 .map(item -> mapper.map(item, ItemDto.class))
@@ -112,7 +115,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ItemDtoWithBookings> getAllItems(Long userId, Pageable page) {
+    public List<ItemDtoWithBookings> getAllItems(Long userId, Integer from, Integer size) {
+        Pageable page = PageRequest.of(from / size, size);
         User owner = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d не найден", userId)));
         List<ItemDtoWithBookings> items = itemRepository.findAllByOwnerOrderById(owner, page)

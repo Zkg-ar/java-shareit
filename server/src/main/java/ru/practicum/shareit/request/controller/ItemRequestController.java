@@ -2,8 +2,6 @@ package ru.practicum.shareit.request.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ResponseItemRequestDto;
@@ -39,7 +37,7 @@ public class ItemRequestController {
                                                              @RequestParam(value = "from", defaultValue = "0") Integer from,
                                                              @RequestParam(value = "size", defaultValue = "20") Integer size) {
         log.info("Постраничный вывод информации о запросах");
-        return itemRequestService.getAllWithPagination(userId, PageRequest.of(from, size, Sort.by("created").descending()));
+        return itemRequestService.getAllWithPagination(userId, from,size);
     }
 
     @GetMapping("/{requestId}")

@@ -1,4 +1,3 @@
-
 package ru.practicum.shareit;
 
 import java.util.List;

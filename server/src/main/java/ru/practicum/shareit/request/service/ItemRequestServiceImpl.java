@@ -1,11 +1,14 @@
 package ru.practicum.shareit.request.service;
 
+import ru.practicum.shareit.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.mapper.ItemMapper;
@@ -14,7 +17,6 @@ import ru.practicum.shareit.mapper.UserMapper;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ResponseItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
-import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -76,7 +78,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ResponseItemRequestDto> getAllWithPagination(Long userId, Pageable page) {
+    public List<ResponseItemRequestDto> getAllWithPagination(Long userId, Integer from, Integer size) {
+        Pageable page = PageRequest.of(from / size, size, Sort.by("created").descending());
         userService.getUserById(userId);
 
         Page<ResponseItemRequestDto> requests = itemRequestRepository
