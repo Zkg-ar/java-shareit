@@ -1,4 +1,4 @@
-version: '3.8'
+version: ' 24.0.2,'
 services:
   gateway:
     build: gateway
@@ -9,7 +9,7 @@ services:
     depends_on:
       - server
     environment:
-      - SHAREIT_SERVER_URL=http://server:9090
+      - SHAREIT_SERVER_URL= http://server:9090
 
   server:
     build: server
@@ -31,6 +31,7 @@ services:
     ports:
       - "6541:5432"
     environment:
-      - POSTGRES_DB=
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
+    volumes:
+      - /var/lib/postgresql/data/
