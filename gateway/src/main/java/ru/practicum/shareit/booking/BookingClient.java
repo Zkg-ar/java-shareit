@@ -20,7 +20,6 @@ public class BookingClient extends BaseClient {
     private static final String API_PREFIX = "/bookings";
 
 
-
     @Autowired
     public BookingClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
         super(
@@ -59,12 +58,13 @@ public class BookingClient extends BaseClient {
         return get("/owner?state={state}&from={from}&size={size}", userId, parameters);
     }
 
-    public ResponseEntity<Object> updateStatus(long userId,Long bookingId,Boolean approved){
+    public ResponseEntity<Object> updateStatus(Long id, Long bookerId, Boolean approved) {
         Map<String, Object> parameters = Map.of(
                 "approved", approved
         );
-        return patch("/"+bookingId,userId,parameters);
+        return patch("/" + id + "?approved={approved}", bookerId, parameters, null);
     }
+
 
 
 }

@@ -73,7 +73,10 @@ public class RequestControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(itemRequestDto.getId()), Long.class))
                 .andExpect(jsonPath("$.description", is(itemRequestDto.getDescription())))
-                .andExpect(jsonPath("$.created", is(itemRequestDto.getCreated())));
+                .andExpect(jsonPath("$.created[0]", is(itemRequestDto.getCreated().getYear())))
+                .andExpect(jsonPath("$.created[1]", is(itemRequestDto.getCreated().getMonthValue())))
+                .andExpect(jsonPath("$.created[2]", is(itemRequestDto.getCreated().getDayOfMonth())));
+
     }
 
     @Test
@@ -117,7 +120,7 @@ public class RequestControllerTest {
     @Test
     @DisplayName("Получение списка запросов постранично")
     public void getAllWithPaginationTest() throws Exception {
-        when(itemRequestService.getAllWithPagination(anyLong(), anyInt(),anyInt()))
+        when(itemRequestService.getAllWithPagination(anyLong(), anyInt(), anyInt()))
                 .thenReturn(List.of(itemRequestDto));
 
         mvc.perform(get("/requests/all")

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 
 @Controller
@@ -35,8 +37,8 @@ public class RequestController {
 
     @GetMapping("/all")
     public ResponseEntity<Object> getAllWithPagination(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
-                                                       @RequestParam(value = "from", defaultValue = "0") Integer from,
-                                                       @RequestParam(value = "size", defaultValue = "20") Integer size) {
+                                                       @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero Integer from,
+                                                       @RequestParam(value = "size", defaultValue = "20") @Positive Integer size) {
         log.info("Постраничный вывод информации о запросах");
         return requestClient.getAllRequestsPagination(userId, from, size);
     }

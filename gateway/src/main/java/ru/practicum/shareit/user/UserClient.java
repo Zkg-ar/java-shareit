@@ -13,7 +13,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 @Service
 public class UserClient extends BaseClient {
 
-    private static final String API_PREFIX = "/items";
+    private static final String API_PREFIX = "/users";
 
 
     @Autowired
@@ -26,23 +26,23 @@ public class UserClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> saveUser(UserDto userDto){
-        return post("",userDto);
+    public ResponseEntity<Object> saveUser(UserDto userDto) {
+        return post("", userDto);
     }
 
-    public ResponseEntity<Object> updateUser(Long userId,UserDto userDto){
-        return patch("/"+userId,userDto);
+    public ResponseEntity<Object> updateUser(Long userId, UserDto userDto) {
+        return patch("/" + userId, userDto);
     }
 
-    public ResponseEntity<Object>getUserById(Long id){
-        return get("/"+id);
+    public ResponseEntity<Object> getUserById(Long id) {
+        return get("/" + id);
     }
 
-    public ResponseEntity<Object>delete(Long id){
-        return delete("/"+id);
+    public ResponseEntity<Object> delete(Long id) {
+        return delete("/" + id, id);
     }
 
-    public ResponseEntity<Object>getAllUsers(){
+    public ResponseEntity<Object> getAllUsers() {
         return get("");
     }
 }
