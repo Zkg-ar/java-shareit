@@ -63,6 +63,6 @@ public class BookingController {
                                              @PathVariable Long bookingId,
                                              @RequestParam Boolean approved) {
         log.info("Подтверждение или отклонение запроса на бронирование");
-        return bookingClient.updateStatus(userId, bookingId, approved);
+        return bookingClient.updateStatus(bookingId,userId, approved);
     }
 }
