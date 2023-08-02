@@ -17,6 +17,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -66,8 +67,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookingDto> getByOwner(Long userId, State state, Integer from,Integer size) {
-        Pageable page = PageRequest.of(from/size,size);
+    public List<BookingDto> getByOwner(Long userId, State state, Integer from, Integer size) {
+        Pageable page = PageRequest.of(from / size, size);
         User owner = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d не найден ", userId)));
         LocalDateTime now = LocalDateTime.now();
@@ -112,8 +113,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookingDto> getAllBookingsOfCurrentUser(Long userId, State state, Integer from,Integer size) {
-        Pageable page = PageRequest.of(from/size,size);
+    public List<BookingDto> getAllBookingsOfCurrentUser(Long userId, State state, Integer from, Integer size) {
+        Pageable page = PageRequest.of(from / size, size);
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %d не найден ", userId)));
         LocalDateTime now = LocalDateTime.now();

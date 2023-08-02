@@ -66,5 +66,4 @@ public class BookingClient extends BaseClient {
     }
 
 
-
 }

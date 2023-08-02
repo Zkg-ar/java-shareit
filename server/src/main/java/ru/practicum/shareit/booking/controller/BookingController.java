@@ -40,10 +40,10 @@ public class BookingController {
     @GetMapping
     public List<BookingDto> getBookingsOfCurrentUser(@RequestHeader("X-Sharer-User-Id") Long userId,
                                                      @RequestParam(defaultValue = "ALL") State state,
-                                                     @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer from ,
+                                                     @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer from,
                                                      @RequestParam(value = "size", defaultValue = "20") @Min(1) Integer size) {
         log.info("Получение списка всех бронирований текущего пользователя. ");
-        return bookingService.getAllBookingsOfCurrentUser(userId, state,from,size);
+        return bookingService.getAllBookingsOfCurrentUser(userId, state, from, size);
     }
 
 
@@ -53,7 +53,7 @@ public class BookingController {
                                           @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer from,
                                           @RequestParam(value = "size", defaultValue = "20") @Min(1) Integer size) {
         log.info("Получение списка бронирований для всех вещей заданного пользователя");
-        return bookingService.getByOwner(userId, state, from,size);
+        return bookingService.getByOwner(userId, state, from, size);
     }
 
     @PatchMapping("/{bookingId}")

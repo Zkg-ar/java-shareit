@@ -12,9 +12,9 @@ public interface BookingService {
 
     BookingDto getById(Long userId, Long bookingId);
 
-    List<BookingDto> getByOwner(Long userId, State state, Integer from,Integer size);
+    List<BookingDto> getByOwner(Long userId, State state, Integer from, Integer size);
 
-    List<BookingDto> getAllBookingsOfCurrentUser(Long userId, State state, Integer from,Integer size);
+    List<BookingDto> getAllBookingsOfCurrentUser(Long userId, State state, Integer from, Integer size);
 
     BookingDto approveOrRejectBooking(Long userId, Long bookingId, Boolean approved);
 }

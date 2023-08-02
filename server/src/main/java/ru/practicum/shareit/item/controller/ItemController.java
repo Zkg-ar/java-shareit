@@ -40,7 +40,7 @@ public class ItemController {
                                                  @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer from,
                                                  @RequestParam(value = "size", defaultValue = "20") @Min(1) Integer size) {
         log.info("Получен запрос на получения списка всех вещей");
-        return itemService.getAllItems(userId, from,size);
+        return itemService.getAllItems(userId, from, size);
     }
 
     @GetMapping("/search")
@@ -52,7 +52,7 @@ public class ItemController {
             return Collections.emptyList();
         }
 
-        return itemService.search(text,from,size);
+        return itemService.search(text, from, size);
 
     }
 

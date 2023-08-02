@@ -60,9 +60,9 @@ public class BookingController {
 
     @PatchMapping("/{bookingId}")
     public ResponseEntity<Object> approveOrRejectBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                             @PathVariable Long bookingId,
-                                             @RequestParam Boolean approved) {
+                                                         @PathVariable Long bookingId,
+                                                         @RequestParam Boolean approved) {
         log.info("Подтверждение или отклонение запроса на бронирование");
-        return bookingClient.updateStatus(bookingId,userId, approved);
+        return bookingClient.updateStatus(bookingId, userId, approved);
     }
 }
