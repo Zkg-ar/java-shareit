@@ -9,7 +9,7 @@ services:
     depends_on:
       - server
     environment:
-      - SHAREIT_SERVER_URL= http://server:9090
+      - SHAREIT_SERVER_URL=http://server:9090
 
   server:
     build: server
