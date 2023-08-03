@@ -48,9 +48,6 @@ public class ItemController {
                                            @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer from,
                                            @RequestParam(value = "size", defaultValue = "20") @Min(1) Integer size) {
         log.info("Запрошен товар в названии или описании которого есть слово {}", text);
-        if (text.isEmpty()) {
-            return Collections.emptyList();
-        }
 
         return itemService.search(text, from, size);
 
