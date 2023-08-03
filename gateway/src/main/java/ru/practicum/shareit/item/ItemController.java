@@ -12,6 +12,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.util.Collections;
 
 @Controller
 @RequestMapping(path = "/items")
@@ -50,6 +51,9 @@ public class ItemController {
                                                     @RequestParam(value = "size", defaultValue = "20") @Min(1) Integer size) {
         log.info("Запрошен товар в названии или описании которого есть слово {}", text);
 
+        if (text.isEmpty()) {
+            return (ResponseEntity<Object>) Collections.emptyList();
+        }
 
         return itemClient.searchByText(text, from, size);
 
