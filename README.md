@@ -3,17 +3,17 @@
 Это сервис совместного использования вещей. Пользователь может брать вещи напрокат, оставлять отзывы о вещах, которые были взяты им в шеринг, создавать запрос если нужной вещи еще нет на платформе. Приложение состоит из нескольких микросервисов. REST-сервисы с использованием Spring-Boot, Maven, Lombok, взаимодействие с базой данных (PostgreSQL) с использованием Hibernate, Docker. База данных также подключается как отдельный микросервис.
 
 ## Стек-технологий
--Java 11 
--Spring Boot 
--Docker 
--PostgreSQL 
--Hibernate 
--Maven 
--JUnit5 
--Mockito 
--RESTful API 
--MapStruct 
--Lombok
+- Java 11 
+- Spring Boot 
+- Docker 
+- PostgreSQL 
+- Hibernate 
+- Maven 
+- JUnit5 
+- Mockito 
+- RESTful API 
+- MapStruct 
+- Lombok
 ## Функционал проекта
 ### Эндпоинты для бронирований(/bookings)
 GET /bookings?state={state}&from={from}&size={size} получение списка всех бронирований пользователя отсортированных по дате от более новым к старым.
